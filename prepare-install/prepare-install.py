@@ -88,6 +88,7 @@ def copyLangFiles():
   print "---- Copying language files..."
   
   shutil.copytree(quiterssReleasePath + "\\lang", preparePath + "\\lang")
+  shutil.copystat(quiterssReleasePath + "\\lang", preparePath + "\\lang")
   
   global prepareFileList
   langFiles = os.listdir(preparePath + "\\lang")
@@ -116,7 +117,7 @@ def copyFileList(fileList, src):
       
     # Копируем файл, обрабатывая ошибки
     try:
-      shutil.copy(src + file[idDir] + '\\' + file[idName], preparePath + file[idDir] + '\\' + file[idName])
+      shutil.copy2(src + file[idDir] + '\\' + file[idName], preparePath + file[idDir] + '\\' + file[idName])
     except (IOError, os.error), why:
       print str(why)
       
@@ -143,7 +144,7 @@ def createMD5(fileList, path):
 
 def copyMD5():
   print "---- Copying md5-file to quiterss.file-repo"
-  shutil.copy(preparePath + '\\file_list.md5', quiterssFileRepoPath + '\\file_list.md5')
+  shutil.copy2(preparePath + '\\file_list.md5', quiterssFileRepoPath + '\\file_list.md5')
   print "Done"
 
 def packFiles(fileList, path):
@@ -167,7 +168,7 @@ def copyPackedFiles():
   
   for file in prepareFileList7z:
     print 'copying: ' + file
-    shutil.copy(preparePath + file, quiterssFileRepoPath + '\\windows' + file)
+    shutil.copy2(preparePath + file, quiterssFileRepoPath + '\\windows' + file)
   
   print 'Done'
 

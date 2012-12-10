@@ -202,9 +202,10 @@ def readConfigFile():
     return
   
   config = ConfigParser.SafeConfigParser()
+  config.optionxform = str
   config.read(configFileName)
   print config.items('paths')
-  
+
   qtsdkPath = config.get('paths', 'qtsdkPath')
   quiterssSourcePath = config.get('paths', 'quiterssSourcePath')
   quiterssReleasePath = config.get('paths', 'quiterssReleasePath')
@@ -220,6 +221,7 @@ def writeConfigFile():
   print '---- Writing config file: ' + configFileName
   
   config = ConfigParser.SafeConfigParser()
+  config.optionxform = str
   config.add_section('paths')
   config.set('paths', 'qtsdkPath', qtsdkPath)
   config.set('paths', 'quiterssSourcePath', quiterssSourcePath)

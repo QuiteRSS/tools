@@ -133,7 +133,7 @@ def createMD5(fileList, path):
   f = open(path + '\\file_list.md5', 'w')
   for file in fileList:
     fileName = path + file
-    fileHash = hashlib.md5(open(fileName, 'r').read()).hexdigest()
+    fileHash = hashlib.md5(open(fileName, 'rb').read()).hexdigest()
     line = fileHash + ' *' + file[1:]
     f.write(line + '\n')
     print line

@@ -193,6 +193,23 @@ def updateFileRepo():
   
   print 'Done'
 
+def readConfigFile():
+  configFileName = os.path.basename(sys.argv[0]).replace('.py', '.ini')
+  print '---- Reading config file: ' + configFileName
+  
+  config = ConfigParser.SafeConfigParser()
+  config.read(configFileName)
+  print config.items('paths')
+  qtsdkAbsPath = config.get('paths', 'qtsdkAbsPath')
+  quiterssSourceAbsPath = config.get('paths', 'quiterssSourceAbsPath')
+  quiterssReleaseAbsPath = config.get('paths', 'quiterssReleaseAbsPath')
+  updaterPath = config.get('paths', 'updaterPath')
+  prepareAbsPath = config.get('paths', 'prepareAbsPath')
+  quiterssFileRepoPath = config.get('paths', 'quiterssFileRepoPath')
+  packerPath = config.get('paths', 'packerPath')
+
+  print 'Done'
+
 def writeConfigFile():
   configFileName = os.path.basename(sys.argv[0]).replace('.py', '.ini')
   print '---- Writing config file: ' + configFileName
@@ -216,6 +233,7 @@ def writeConfigFile():
 
 def main():
   print "QuiteRSS prepare-install"
+  readConfigFile()
   preparePath(prepareAbsPath)
   copyLangFiles()
   copyFileList(filesFromRelease, quiterssReleaseAbsPath)

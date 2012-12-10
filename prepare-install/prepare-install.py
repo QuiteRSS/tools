@@ -14,6 +14,7 @@ from subprocess import call
 qtsdkAbsPath = 'c:\\QtSDK\\Desktop\\Qt\\4.8.0\\mingw'
 quiterssSourceAbsPath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS"
 quiterssReleaseAbsPath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS-build-desktop_Release\\release\\target"
+updaterPath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS-build-desktop_Release\\release\\target"
 prepareAbsPath  = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS_prepare-install"
 quiterssFileRepoPath = 'e:\\Work\\_Useful\\QtProjects\\QuiteRss.File - copy'
 packerPath = 'e:\\Work\\_Utilities\\7za\\7za.exe'
@@ -33,7 +34,10 @@ filesFromSource = [
 ]
 
 filesFromRelease = [
-  ['', 'QuiteRSS.exe'],
+  ['', 'QuiteRSS.exe']
+]
+
+filesFromUpdater = [
   ['', '7za.exe'],
   ['', 'Updater.exe']
 ]
@@ -192,6 +196,7 @@ def main():
   preparePath(prepareAbsPath)
   copyLangFiles()
   copyFileList(filesFromRelease, quiterssReleaseAbsPath)
+  copyFileList(filesFromUpdater, updaterPath)
   copyFileList(filesFromSource, quiterssSourceAbsPath)
   copyFileList(filesFromQtSDKPlugins, qtsdkAbsPath + '\\plugins')
   copyFileList(filesFromQtSDKBin, qtsdkAbsPath + '\\bin')

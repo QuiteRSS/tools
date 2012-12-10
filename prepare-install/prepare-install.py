@@ -13,12 +13,12 @@ import shutil
 import sys
 from subprocess import call
 
-qtsdkAbsPath = 'c:\\QtSDK\\Desktop\\Qt\\4.8.0\\mingw'
-quiterssSourceAbsPath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS"
-quiterssReleaseAbsPath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS-build-desktop_Release\\release\\target"
+qtsdkPath = 'c:\\QtSDK\\Desktop\\Qt\\4.8.0\\mingw'
+quiterssSourcePath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS"
+quiterssReleasePath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS-build-desktop_Release\\release\\target"
 updaterPath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS-build-desktop_Release\\release\\target"
-prepareAbsPath  = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS_prepare-install"
-quiterssFileRepoPath = 'e:\\Work\\_Useful\\QtProjects\\QuiteRss.File - copy'
+preparePath  = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS_prepare-install"
+quiterssFileRepoPath = 'e:\\Work\\_Useful\\QtProjects\\QuiteRss.File'
 packerPath = 'e:\\Work\\_Utilities\\7za\\7za.exe'
 
 # Список файлов состоит из относительного пути папки, содержащей файл,
@@ -75,7 +75,7 @@ filesFromQtSDKBin = [
 
 prepareFileList = []
 
-def preparePath(path):
+def createPreparePath(path):
   print "---- Preparing path: " + path
   if (os.path.exists(path)):
     print "Path exists. Remove it"
@@ -87,10 +87,10 @@ def preparePath(path):
 def copyLangFiles():
   print "---- Copying language files..."
   
-  shutil.copytree(quiterssReleaseAbsPath + "\\lang", prepareAbsPath + "\\lang")
+  shutil.copytree(quiterssReleasePath + "\\lang", preparePath + "\\lang")
   
   global prepareFileList
-  langFiles = os.listdir(prepareAbsPath + "\\lang")
+  langFiles = os.listdir(preparePath + "\\lang")
   for langFile in langFiles:
     langPath = '\\lang\\' + langFile
     print langPath
@@ -111,12 +111,12 @@ def copyFileList(fileList, src):
     print file[idDir] + '\\' + file[idName]
     
     # Если есть имя папки, то создаём её
-    if file[idDir] and (not os.path.exists(prepareAbsPath + file[idDir])):
-      os.makedirs(prepareAbsPath + file[idDir])
+    if file[idDir] and (not os.path.exists(preparePath + file[idDir])):
+      os.makedirs(preparePath + file[idDir])
       
     # Копируем файл, обрабатывая ошибки
     try:
-      shutil.copy(src + file[idDir] + '\\' + file[idName], prepareAbsPath + file[idDir] + '\\' + file[idName])
+      shutil.copy(src + file[idDir] + '\\' + file[idName], preparePath + file[idDir] + '\\' + file[idName])
     except (IOError, os.error), why:
       print str(why)
       
@@ -143,7 +143,7 @@ def createMD5(fileList, path):
 
 def copyMD5():
   print "---- Copying md5-file to quiterss.file-repo"
-  shutil.copy(prepareAbsPath + '\\file_list.md5', quiterssFileRepoPath + '\\file_list.md5')
+  shutil.copy(preparePath + '\\file_list.md5', quiterssFileRepoPath + '\\file_list.md5')
   print "Done"
 
 def packFiles(fileList, path):
@@ -167,7 +167,7 @@ def copyPackedFiles():
   
   for file in prepareFileList7z:
     print 'copying: ' + file
-    shutil.copy(prepareAbsPath + file, quiterssFileRepoPath + '\\windows' + file)
+    shutil.copy(preparePath + file, quiterssFileRepoPath + '\\windows' + file)
   
   print 'Done'
 
@@ -204,11 +204,12 @@ def readConfigFile():
   config = ConfigParser.SafeConfigParser()
   config.read(configFileName)
   print config.items('paths')
-  qtsdkAbsPath = config.get('paths', 'qtsdkAbsPath')
-  quiterssSourceAbsPath = config.get('paths', 'quiterssSourceAbsPath')
-  quiterssReleaseAbsPath = config.get('paths', 'quiterssReleaseAbsPath')
+  
+  qtsdkPath = config.get('paths', 'qtsdkPath')
+  quiterssSourcePath = config.get('paths', 'quiterssSourcePath')
+  quiterssReleasePath = config.get('paths', 'quiterssReleasePath')
   updaterPath = config.get('paths', 'updaterPath')
-  prepareAbsPath = config.get('paths', 'prepareAbsPath')
+  preparePath = config.get('paths', 'preparePath')
   quiterssFileRepoPath = config.get('paths', 'quiterssFileRepoPath')
   packerPath = config.get('paths', 'packerPath')
 
@@ -220,11 +221,11 @@ def writeConfigFile():
   
   config = ConfigParser.SafeConfigParser()
   config.add_section('paths')
-  config.set('paths', 'qtsdkAbsPath', qtsdkAbsPath)
-  config.set('paths', 'quiterssSourceAbsPath', quiterssSourceAbsPath)
-  config.set('paths', 'quiterssReleaseAbsPath', quiterssReleaseAbsPath)
+  config.set('paths', 'qtsdkPath', qtsdkPath)
+  config.set('paths', 'quiterssSourcePath', quiterssSourcePath)
+  config.set('paths', 'quiterssReleasePath', quiterssReleasePath)
   config.set('paths', 'updaterPath', updaterPath)
-  config.set('paths', 'prepareAbsPath', prepareAbsPath)
+  config.set('paths', 'preparePath', preparePath)
   config.set('paths', 'quiterssFileRepoPath', quiterssFileRepoPath)
   config.set('paths', 'packerPath', packerPath)
   print config.items('paths')
@@ -238,16 +239,16 @@ def writeConfigFile():
 def main():
   print "QuiteRSS prepare-install"
   readConfigFile()
-  preparePath(prepareAbsPath)
+  createPreparePath(preparePath)
   copyLangFiles()
-  copyFileList(filesFromRelease, quiterssReleaseAbsPath)
+  copyFileList(filesFromRelease, quiterssReleasePath)
   copyFileList(filesFromUpdater, updaterPath)
-  copyFileList(filesFromSource, quiterssSourceAbsPath)
-  copyFileList(filesFromQtSDKPlugins, qtsdkAbsPath + '\\plugins')
-  copyFileList(filesFromQtSDKBin, qtsdkAbsPath + '\\bin')
-  createMD5(prepareFileList, prepareAbsPath)
+  copyFileList(filesFromSource, quiterssSourcePath)
+  copyFileList(filesFromQtSDKPlugins, qtsdkPath + '\\plugins')
+  copyFileList(filesFromQtSDKBin, qtsdkPath + '\\bin')
+  createMD5(prepareFileList, preparePath)
   copyMD5()
-  packFiles(prepareFileList, prepareAbsPath)
+  packFiles(prepareFileList, preparePath)
   copyPackedFiles()
   updateFileRepo()
   writeConfigFile()

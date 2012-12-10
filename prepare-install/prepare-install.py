@@ -6,9 +6,11 @@
 @author aleksey.hohryakov@gmail.com
 '''
 
+import ConfigParser
 import hashlib
 import os
 import shutil
+import sys
 from subprocess import call
 
 qtsdkAbsPath = 'c:\\QtSDK\\Desktop\\Qt\\4.8.0\\mingw'
@@ -191,6 +193,27 @@ def updateFileRepo():
   
   print 'Done'
 
+def writeConfigFile():
+  configFileName = os.path.basename(sys.argv[0]).replace('.py', '.ini')
+  print '---- Writing config file: ' + configFileName
+  
+  config = ConfigParser.SafeConfigParser()
+  config.add_section('paths')
+  config.set('paths', 'qtsdkAbsPath', qtsdkAbsPath)
+  config.set('paths', 'quiterssSourceAbsPath', quiterssSourceAbsPath)
+  config.set('paths', 'quiterssReleaseAbsPath', quiterssReleaseAbsPath)
+  config.set('paths', 'updaterPath', updaterPath)
+  config.set('paths', 'prepareAbsPath', prepareAbsPath)
+  config.set('paths', 'quiterssFileRepoPath', quiterssFileRepoPath)
+  config.set('paths', 'packerPath', packerPath)
+  print config.items('paths')
+
+  # Writing our configuration to file
+  with open(configFileName, 'wb') as configfile:
+    config.write(configfile)
+  
+  print 'Done'
+
 def main():
   print "QuiteRSS prepare-install"
   preparePath(prepareAbsPath)
@@ -205,6 +228,7 @@ def main():
   packFiles(prepareFileList, prepareAbsPath)
   copyPackedFiles()
   updateFileRepo()
+  writeConfigFile()
 
 if __name__ == '__main__':
   main()

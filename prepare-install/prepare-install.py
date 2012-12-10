@@ -194,6 +194,14 @@ def updateFileRepo():
   print 'Done'
 
 def readConfigFile():
+  global qtsdkPath
+  global quiterssSourcePath
+  global quiterssReleasePath
+  global updaterPath
+  global preparePath
+  global quiterssFileRepoPath
+  global packerPath
+  
   configFileName = os.path.basename(sys.argv[0]).replace('.py', '.ini')
   print '---- Reading config file: ' + configFileName
   

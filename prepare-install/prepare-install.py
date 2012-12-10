@@ -197,6 +197,10 @@ def readConfigFile():
   configFileName = os.path.basename(sys.argv[0]).replace('.py', '.ini')
   print '---- Reading config file: ' + configFileName
   
+  if (not os.path.exists(configFileName)):
+    print 'Abort: file not found'
+    return
+  
   config = ConfigParser.SafeConfigParser()
   config.read(configFileName)
   print config.items('paths')

@@ -268,6 +268,11 @@ def makePortableVersion():
   f = open(portableTempPath + '\\portable.dat', 'w')
   f.close()
   
+  print 'Pack folder...'
+  packCmdLine = packerPath + ' a "' + portableTempPath + '.7z" "' + portableTempPath + '"'
+  print 'subprocess.call(' + packCmdLine + ')'
+  call(packCmdLine);
+  
   print 'Done'
 
 def main():

@@ -18,7 +18,7 @@ quiterssSourcePath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS"
 quiterssReleasePath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS-build-desktop_Release\\release\\target"
 updaterPath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS-build-desktop_Release\\release\\target"
 preparePath  = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS_prepare-install"
-portablePath  = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS-"
+portablePath  = "e:\\Work\\_Useful\\QtProjects"
 quiterssFileRepoPath = 'e:\\Work\\_Useful\\QtProjects\\QuiteRss.File'
 packerPath = 'e:\\Work\\_Utilities\\7za\\7za.exe'
 
@@ -253,7 +253,7 @@ def writeConfigFile():
   print 'Done'
 
 def makePortableVersion():
-  portableTempPath = portablePath + '0.0.0'
+  portableTempPath = portablePath + '\\QuiteRSS-' + '0.0.0'
   print '---- Makeing portable version in ' + portableTempPath
 
   if (os.path.exists(portableTempPath)):
@@ -273,6 +273,29 @@ def makePortableVersion():
   print 'subprocess.call(' + packCmdLine + ')'
   call(packCmdLine);
   
+  print 'Remove folder...'
+  shutil.rmtree(portableTempPath)
+  
+  print 'Done'
+
+def makeSources():
+  sourcesTempPath = portablePath + '\\QuiteRSS-' + '0.0.0' + '-src'
+  print '---- Making sources in ' + sourcesTempPath
+
+  if (os.path.exists(sourcesTempPath)):
+    print "Path exists. Remove it"
+    shutil.rmtree(sourcesTempPath)
+
+  if (os.path.exists(sourcesTempPath + '.tar.bz2')):
+    print "File exists. Remove it"
+    # shutil.rmtree(sourcesTempPath)
+    os.remove(sourcesTempPath + '.tar.bz2')
+  
+  print 'Export mercurial sources...'
+  packCmdLine = 'hg archive --cwd ' + quiterssSourcePath + ' --type tbz2 ' + sourcesTempPath + '.tar.bz2'
+  print 'subprocess.call(' + packCmdLine + ')'
+  call(packCmdLine);
+  
   print 'Done'
 
 def main():
@@ -286,6 +309,7 @@ def main():
   copyFileList(filesFromQtSDKPlugins, qtsdkPath + '\\plugins')
   copyFileList(filesFromQtSDKBin, qtsdkPath + '\\bin')
   makePortableVersion()
+  makeSources()
   # createMD5(prepareFileList, preparePath)
   # copyMD5()
   # packFiles(prepareFileList, preparePath)

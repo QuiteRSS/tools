@@ -18,6 +18,7 @@ quiterssSourcePath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS"
 quiterssReleasePath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS-build-desktop_Release\\release\\target"
 updaterPath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS-build-desktop_Release\\release\\target"
 preparePath  = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS_prepare-install"
+portablePath  = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS-"
 quiterssFileRepoPath = 'e:\\Work\\_Useful\\QtProjects\\QuiteRss.File'
 packerPath = 'e:\\Work\\_Utilities\\7za\\7za.exe'
 
@@ -200,6 +201,7 @@ def readConfigFile():
   global quiterssReleasePath
   global updaterPath
   global preparePath
+  global portablePath
   global quiterssFileRepoPath
   global packerPath
   
@@ -220,6 +222,8 @@ def readConfigFile():
   quiterssReleasePath = config.get('paths', 'quiterssReleasePath')
   updaterPath = config.get('paths', 'updaterPath')
   preparePath = config.get('paths', 'preparePath')
+  if (config.has_option('paths', 'portablePath')):
+    portablePath = config.get('paths', 'portablePath')
   quiterssFileRepoPath = config.get('paths', 'quiterssFileRepoPath')
   packerPath = config.get('paths', 'packerPath')
 
@@ -237,6 +241,7 @@ def writeConfigFile():
   config.set('paths', 'quiterssReleasePath', quiterssReleasePath)
   config.set('paths', 'updaterPath', updaterPath)
   config.set('paths', 'preparePath', preparePath)
+  config.set('paths', 'portablePath', portablePath)
   config.set('paths', 'quiterssFileRepoPath', quiterssFileRepoPath)
   config.set('paths', 'packerPath', packerPath)
   print config.items('paths')
@@ -244,6 +249,16 @@ def writeConfigFile():
   # Writing our configuration to file
   with open(configFileName, 'wb') as configfile:
     config.write(configfile)
+  
+  print 'Done'
+
+def makePortableVersion():
+  portableTempPath = portablePath + '0.0.0'
+  print '---- Makeing portable version in ' + portableTempPath
+  
+  print 'Copying files...'
+  shutil.copytree(preparePath, portableTempPath)
+  shutil.copystat(preparePath, portableTempPath)
   
   print 'Done'
 
@@ -257,11 +272,12 @@ def main():
   copyFileList(filesFromSource, quiterssSourcePath)
   copyFileList(filesFromQtSDKPlugins, qtsdkPath + '\\plugins')
   copyFileList(filesFromQtSDKBin, qtsdkPath + '\\bin')
-  createMD5(prepareFileList, preparePath)
-  copyMD5()
-  packFiles(prepareFileList, preparePath)
-  copyPackedFiles()
-  updateFileRepo()
+  makePortableVersion()
+  # createMD5(prepareFileList, preparePath)
+  # copyMD5()
+  # packFiles(prepareFileList, preparePath)
+  # copyPackedFiles()
+  # updateFileRepo()
   writeConfigFile()
 
 if __name__ == '__main__':

@@ -255,6 +255,10 @@ def writeConfigFile():
 def makePortableVersion():
   portableTempPath = portablePath + '0.0.0'
   print '---- Makeing portable version in ' + portableTempPath
+
+  if (os.path.exists(portableTempPath)):
+    print "Path exists. Remove it"
+    shutil.rmtree(portableTempPath)
   
   print 'Copying files...'
   shutil.copytree(preparePath, portableTempPath)

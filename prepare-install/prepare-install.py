@@ -310,11 +310,11 @@ def main():
   copyFileList(filesFromQtSDKBin, qtsdkPath + '\\bin')
   makePortableVersion()
   makeSources()
-  # createMD5(prepareFileList, preparePath)
-  # copyMD5()
-  # packFiles(prepareFileList, preparePath)
-  # copyPackedFiles()
-  # updateFileRepo()
+  createMD5(prepareFileList, preparePath)
+  copyMD5()
+  packFiles(prepareFileList, preparePath)
+  copyPackedFiles()
+  updateFileRepo()
   writeConfigFile()
 
 if __name__ == '__main__':

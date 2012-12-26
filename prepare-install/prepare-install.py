@@ -260,6 +260,10 @@ def makePortableVersion():
   shutil.copytree(preparePath, portableTempPath)
   shutil.copystat(preparePath, portableTempPath)
   
+  print 'Creating portable.dat...'
+  f = open(portableTempPath + '\\portable.dat', 'w')
+  f.close()
+  
   print 'Done'
 
 def main():

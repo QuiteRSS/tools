@@ -23,8 +23,8 @@ packerPath = 'e:\\Work\\_Utilities\\7za\\7za.exe'
 
 # Список файлов состоит из относительного пути папки, содержащей файл,
 # и имени файла, который необходимо скопировать
-idDir  = 0
-idName = 1
+ID_DIR  = 0
+ID_NAME = 1
 filesFromSource = [
   ['\\sound', 'notification.wav'],
   ['', 'AUTHORS'],
@@ -109,19 +109,19 @@ def copyFileList(fileList, src):
   
   # Перебираем список файлов
   for file in fileList:
-    print file[idDir] + '\\' + file[idName]
+    print file[ID_DIR] + '\\' + file[ID_NAME]
     
     # Если есть имя папки, то создаём её
-    if file[idDir] and (not os.path.exists(preparePath + file[idDir])):
-      os.makedirs(preparePath + file[idDir])
+    if file[ID_DIR] and (not os.path.exists(preparePath + file[ID_DIR])):
+      os.makedirs(preparePath + file[ID_DIR])
       
     # Копируем файл, обрабатывая ошибки
     try:
-      shutil.copy2(src + file[idDir] + '\\' + file[idName], preparePath + file[idDir] + '\\' + file[idName])
+      shutil.copy2(src + file[ID_DIR] + '\\' + file[ID_NAME], preparePath + file[ID_DIR] + '\\' + file[ID_NAME])
     except (IOError, os.error), why:
       print str(why)
       
-    prepareFileList.append(file[idDir] + '\\' + file[idName])
+    prepareFileList.append(file[ID_DIR] + '\\' + file[ID_NAME])
     
   print "Done"
 

@@ -357,6 +357,15 @@ def makeInstaller():
   
   print 'Done'
 
+def finalize():
+  print
+  print '  ###    ###   #   #  #####      #  #  #  '
+  print '  #  #  #   #  ##  #  #          #  #  #  '
+  print '  #  #  #   #  # # #  ####       #  #  #  '
+  print '  #  #  #   #  #  ##  #                   '
+  print '  ###    ###   #   #  #####      #  #  #  '
+  print
+
 def main():
   print "QuiteRSS prepare-install"
   readConfigFile()
@@ -379,6 +388,7 @@ def main():
     updateFileRepo()
   deletePreparePath(preparePath)
   writeConfigFile()
+  finalize()
 
 if __name__ == '__main__':
   main()

@@ -21,6 +21,7 @@ preparePath  = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS_prepare-install"
 portablePath  = "e:\\Work\\_Useful\\QtProjects"
 quiterssFileRepoPath = 'e:\\Work\\_Useful\\QtProjects\\QuiteRss.File'
 packerPath = 'e:\\Work\\_Utilities\\7za\\7za.exe'
+innoSetupCompilerPath = 'C:\\Program Files\\Inno Setup 5\\Compil32.exe'
 
 # Список файлов состоит из относительного пути папки, содержащей файл,
 # и имени файла, который необходимо скопировать
@@ -226,6 +227,8 @@ def readConfigFile():
     portablePath = config.get('paths', 'portablePath')
   quiterssFileRepoPath = config.get('paths', 'quiterssFileRepoPath')
   packerPath = config.get('paths', 'packerPath')
+  if (config.has_option('paths', 'innoSetupCompilerPath')):
+    innoSetupCompilerPath = config.get('paths', 'innoSetupCompilerPath')
 
   print 'Done'
 
@@ -244,6 +247,7 @@ def writeConfigFile():
   config.set('paths', 'portablePath', portablePath)
   config.set('paths', 'quiterssFileRepoPath', quiterssFileRepoPath)
   config.set('paths', 'packerPath', packerPath)
+  config.set('paths', 'innoSetupCompilerPath', innoSetupCompilerPath)
   print config.items('paths')
 
   # Writing our configuration to file
@@ -298,6 +302,32 @@ def makeSources():
   
   print 'Done'
 
+def makeInstaller():
+  print '---- Making installer...'
+  quiterssFileDataPath = quiterssFileRepoPath + '\\installer\\Data'
+
+  if (os.path.exists(quiterssFileDataPath)):
+    print "Path ...\\installer\\Data exists. Remove it"
+    shutil.rmtree(quiterssFileDataPath)
+  
+  print 'Copying files...'
+  shutil.copytree(preparePath, quiterssFileDataPath)
+  shutil.copystat(preparePath, quiterssFileDataPath)
+  
+  print 'Run Inno Setup compiler...'
+  cmdLine = [innoSetupCompilerPath, '/cc', quiterssFileRepoPath + '\\installer\\quiterss.iss']
+  print 'subprocess.call(' + str(cmdLine) + ')'
+  call(cmdLine)
+  
+  print 'Copying installer...'
+  shutil.copy2(quiterssFileRepoPath + '\\installer\\Setup\\QuiteRSS-' + '0.0.0' + '-Setup.exe', portablePath)
+  
+  print 'Cleanup installer files...'
+  shutil.rmtree(quiterssFileRepoPath + '\\installer\\Data')
+  shutil.rmtree(quiterssFileRepoPath + '\\installer\\Setup')
+  
+  print 'Done'
+
 def main():
   print "QuiteRSS prepare-install"
   readConfigFile()
@@ -310,6 +340,7 @@ def main():
   copyFileList(filesFromQtSDKBin, qtsdkPath + '\\bin')
   makePortableVersion()
   makeSources()
+  makeInstaller()
   createMD5(prepareFileList, preparePath)
   copyMD5()
   packFiles(prepareFileList, preparePath)

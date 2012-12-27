@@ -87,6 +87,15 @@ def createPreparePath(path):
   os.makedirs(path)
   print "Path created"
 
+def deletePreparePath(path):
+  print "---- Deleting path: " + path
+  
+  if (os.path.exists(path)):
+    print "Path exists. Remove it"
+    shutil.rmtree(path)
+  
+  print "Path deleted"
+
 def getProductVer():
   print '---- Geting product version'
 
@@ -368,6 +377,7 @@ def main():
   copyPackedFiles()
   if (len(sys.argv) < 2) or (sys.argv[1] != '--dry-run'):
     updateFileRepo()
+  deletePreparePath(preparePath)
   writeConfigFile()
 
 if __name__ == '__main__':

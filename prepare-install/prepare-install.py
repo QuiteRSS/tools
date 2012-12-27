@@ -75,6 +75,7 @@ filesFromQtSDKBin = [
   ['', 'ssleay32.dll']
 ]
 
+strProductVer = '0.0.0'
 prepareFileList = []
 
 def createPreparePath(path):
@@ -85,7 +86,26 @@ def createPreparePath(path):
   
   os.makedirs(path)
   print "Path created"
-    
+
+def getProductVer():
+  print '---- Geting product version'
+
+  global strProductVer
+
+  with open(quiterssSourcePath + '\\src\\VersionNo.h') as f:
+    fileLines = f.readlines()
+    f.close()
+
+  for line in fileLines:
+    l = line.split()
+    if len(l) < 3: continue
+    if l[1] == 'STRPRODUCTVER':
+      strProductVer = l[2][1:-3]
+      
+  print 'Product version is ' + strProductVer
+
+  print 'Done'
+
 def copyLangFiles():
   print "---- Copying language files..."
   
@@ -257,7 +277,7 @@ def writeConfigFile():
   print 'Done'
 
 def makePortableVersion():
-  portableTempPath = portablePath + '\\QuiteRSS-' + '0.0.0'
+  portableTempPath = portablePath + '\\QuiteRSS-' + strProductVer
   print '---- Makeing portable version in ' + portableTempPath
 
   if (os.path.exists(portableTempPath)):
@@ -283,7 +303,7 @@ def makePortableVersion():
   print 'Done'
 
 def makeSources():
-  sourcesTempPath = portablePath + '\\QuiteRSS-' + '0.0.0' + '-src'
+  sourcesTempPath = portablePath + '\\QuiteRSS-' + strProductVer + '-src'
   print '---- Making sources in ' + sourcesTempPath
 
   if (os.path.exists(sourcesTempPath)):
@@ -320,7 +340,7 @@ def makeInstaller():
   call(cmdLine)
   
   print 'Copying installer...'
-  shutil.copy2(quiterssFileRepoPath + '\\installer\\Setup\\QuiteRSS-' + '0.0.0' + '-Setup.exe', portablePath)
+  shutil.copy2(quiterssFileRepoPath + '\\installer\\Setup\\QuiteRSS-' + strProductVer + '-Setup.exe', portablePath)
   
   print 'Cleanup installer files...'
   shutil.rmtree(quiterssFileRepoPath + '\\installer\\Data')
@@ -331,6 +351,7 @@ def makeInstaller():
 def main():
   print "QuiteRSS prepare-install"
   readConfigFile()
+  getProductVer()
   createPreparePath(preparePath)
   copyLangFiles()
   copyFileList(filesFromRelease, quiterssReleasePath)

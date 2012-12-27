@@ -188,10 +188,10 @@ def updateFileRepo():
   call(callLine)
   print ""
   
-  # callLine = 'hg push --cwd "' + quiterssFileRepoPath + '"'
-  # print 'call(' + callLine + ')'
-  # call(callLine)
-  # print ""
+  callLine = 'hg push --cwd "' + quiterssFileRepoPath + '"'
+  print 'call(' + callLine + ')'
+  call(callLine)
+  print ""
   
   print 'Done'
 
@@ -314,7 +314,8 @@ def main():
   copyMD5()
   packFiles(prepareFileList, preparePath)
   copyPackedFiles()
-  updateFileRepo()
+  if (len(sys.argv) < 2) or (sys.argv[1] != '--dry-run'):
+    updateFileRepo()
   writeConfigFile()
 
 if __name__ == '__main__':

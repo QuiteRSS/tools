@@ -1,0 +1,3 @@
+c:\Python27\python.exe -u "d:\Programming\Version\googlecode_upload.py" -s "QuiteRSS 0.12.1 Portable for Windows" -p "quite-rss" -u "ник" -w "пароль" -l "Featured" "d:\Programming\Version\QuiteRSS-0.12.1.zip"
+c:\Python27\python.exe -u "d:\Programming\Version\googlecode_upload.py" -s "QuiteRSS 0.12.1 Installer for Windows" -p "quite-rss" -u "ник" -w "пароль" -l "Featured" "d:\Programming\Version\QuiteRSS-0.12.1-Setup.exe"
+c:\Python27\python.exe -u "d:\Programming\Version\googlecode_upload.py" -s "QuiteRSS 0.12.1 Source code" -p "quite-rss" -u "ник" -w "пароль" -l "Featured" "d:\Programming\Version\QuiteRSS-0.12.1-src.tar.bz2"

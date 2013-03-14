@@ -21,6 +21,7 @@ preparePath  = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS_prepare-install"
 portablePath  = "e:\\Work\\_Useful\\QtProjects"
 quiterssFileRepoPath = 'e:\\Work\\_Useful\\QtProjects\\QuiteRss.File'
 packerPath = 'e:\\Work\\_Utilities\\7za\\7za.exe'
+packerMethod = '.zip'
 innoSetupCompilerPath = 'C:\\Program Files\\Inno Setup 5\\Compil32.exe'
 
 # Список файлов состоит из относительного пути папки, содержащей файл,
@@ -184,7 +185,7 @@ def packFiles(fileList, path):
   '''
   print '---- Pack files'
   for file in fileList:
-    packCmdLine = packerPath + ' a "' + path + file + '.7z" "' + path + file + '"'
+    packCmdLine = packerPath + ' a "' + path + file + packerMethod + " " + path + file + '"'
     print 'subprocess.call(' + packCmdLine + ')'
     call(packCmdLine);
   
@@ -195,7 +196,7 @@ def copyPackedFiles():
   
   prepareFileList7z = []
   for file in prepareFileList:
-    prepareFileList7z.append(file + '.7z')
+    prepareFileList7z.append(file + packerMethod)
   
   for file in prepareFileList7z:
     print 'copying: ' + file
@@ -302,7 +303,7 @@ def makePortableVersion():
   f.close()
   
   print 'Pack folder...'
-  packCmdLine = packerPath + ' a "' + portableTempPath + '.7z" "' + portableTempPath + '"'
+  packCmdLine = packerPath + ' a "' + portableTempPath + packerMethod + " " + portableTempPath + '"'
   print 'subprocess.call(' + packCmdLine + ')'
   call(packCmdLine);
   

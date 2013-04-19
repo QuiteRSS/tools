@@ -1,14 +1,24 @@
+0.0 Убрать из сборки файл TODO
+0.0 Добавить в сборку папку style с файлами
+
+0.1. В файле VersionNo.h изменить версию и дату (версию x.x.x брать из ини-файла, дату ставить автоматом)
+0.2. В файлах HISTORY_EN и HISTORY_RU установить весрию и дату
+0.3. Из файла HISTORY_EN сделать CHANGELOG
+0.4. Сделать коммит "version: Updated to x.x.x (xx.xx.20xx)"
+0.5. Установить метку "Release version x.x.x"
+0.6. Очистить и собрать релиз QuiteRSS (папка проекта и релиза уже указана в ини-файле)
+
 +1.	Создать временную папку под релиз  (желательно чтобы можно было назначить первый раз путь к ней)
 +2.	Скопировать папку с файлами из релиза проекта QuiteRSS "..\release\target\lang\" в созданную папку
 +3.	Скопировать файл из проекта QuiteRSS "..\release\target\QuiteRSS.exe"
 +4.	Скопировать папки с файлами и файлы из исходников QuiteRSS:
 ·	\sound\notification.wav
+·	\style\*.*
 ·	AUTHORS
 ·	COPYING
 ·	HISTORY_EN
 ·	HISTORY_RU
 ·	README
-·	TODO (не знаю надо ли его, или он только для нас?)	
 +5.	Скопировать папки с файлами и файлы из QtSDK
 ·	\sqldrivers\qsqlite4.dll
 ·	\iconengines\qsvgicon4.dll
@@ -55,3 +65,10 @@
 +16.3.	Скомпилировать quiterss.iss из file\installer, спомощью C:\Program Files\Inno Setup 5\Compil32 (если получится)
 +16.4.	Копирование инсталлятора к файлам исходников и портабельной версии
 +17.  Удаление временной папки
+
+18. Ипользуя скрипт googlecode_upload.py загрузить готовые пакеты на сервер. Необходимые ключи для загрузки пакетов:
+    -s "QuiteRSS x.x.x Portable for Windows" -p "quite-rss" -u "пользователь" -w "пароль" -l "Featured" "путь к пакету"
+    -s "QuiteRSS x.x.x Installer for Windows" -p "quite-rss" -u "пользователь" -w "пароль" -l "Featured" "путь к пакету"
+    -s "QuiteRSS x.x.x Source code" -p "quite-rss" -u "пользователь" -w "пароль" -l "Featured" "путь к пакету"
+    Пользователя и пароль брать из ини-файла, путь к пакету уже есть в ини-файле 
+19. Протолкнуть в хранилище проект QuiteRSS

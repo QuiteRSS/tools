@@ -31,6 +31,14 @@ ID_DIR = 0
 ID_NAME = 1
 filesFromSource = [
     ['\\sound', 'notification.wav'],
+    ['\\style', 'gray.qss'],
+    ['\\style', 'green.qss'],
+    ['\\style', 'orange.qss'],
+    ['\\style', 'pink.qss'],
+    ['\\style', 'purple.qss'],
+    ['\\style', 'system.qss'],
+    ['\\style', 'system2.qss'],
+    ['\\style', 'news.css'],
     ['', 'AUTHORS'],
     ['', 'COPYING'],
     ['', 'HISTORY_EN'],

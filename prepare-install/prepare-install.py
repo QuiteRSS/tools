@@ -35,8 +35,7 @@ filesFromSource = [
     ['', 'COPYING'],
     ['', 'HISTORY_EN'],
     ['', 'HISTORY_RU'],
-    ['', 'README'],
-    ['', 'TODO']
+    ['', 'README']
 ]
 
 filesFromRelease = [

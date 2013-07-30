@@ -71,7 +71,6 @@ filesFromQtSDKPlugins = [
 filesFromQtSDKBin = [
     ['', 'libeay32.dll'],
     ['', 'libgcc_s_dw2-1.dll'],
-    ['', 'libssl32.dll'],
     ['', 'mingwm10.dll'],
     ['', 'phonon4.dll'],
     ['', 'QtCore4.dll'],

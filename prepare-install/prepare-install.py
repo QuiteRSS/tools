@@ -65,7 +65,11 @@ filesFromQtSDKPlugins = [
     ['\\imageformats', 'qsvg4.dll'],
     ['\\imageformats', 'qtga4.dll'],
     ['\\imageformats', 'qtiff4.dll'],
-    ['\\phonon_backend', 'phonon_ds94.dll']
+    ['\\phonon_backend', 'phonon_ds94.dll'],
+    ['\\codecs', 'qcncodecs4.dll'],
+    ['\\codecs', 'qjpcodecs4.dll'],
+    ['\\codecs', 'qkrcodecs4.dll'],
+    ['\\codecs', 'qtwcodecs4.dll']
 ]
 
 filesFromQtSDKBin = [

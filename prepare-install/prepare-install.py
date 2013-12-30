@@ -317,7 +317,7 @@ def writeConfigFile():
 
 
 def makePortableVersion():
-    portableTempPath = portablePath + '\\QuiteRSS-' + strProductVer
+    portableTempPath = portablePath + '\\' + strProductVer + '\\QuiteRSS-' + strProductVer
     print '---- Makeing portable version in ' + portableTempPath
 
     if (os.path.exists(portableTempPath)):
@@ -345,7 +345,7 @@ def makePortableVersion():
 
 
 def makeSources():
-    sourcesTempPath = portablePath + '\\QuiteRSS-' + strProductVer + '-src'
+    sourcesTempPath = portablePath + '\\' + strProductVer + '\\QuiteRSS-' + strProductVer + '-src'
     print '---- Making sources in ' + sourcesTempPath
 
     if (os.path.exists(sourcesTempPath)):
@@ -386,7 +386,7 @@ def makeInstaller():
 
     print 'Copying installer...'
     shutil.copy2(quiterssFileRepoPath + '\\installer\\Setup\\QuiteRSS-'
-        + strProductVer + '-Setup.exe', portablePath)
+        + strProductVer + '-Setup.exe', portablePath + '\\' + strProductVer)
 
     print 'Cleanup installer files...'
     shutil.rmtree(quiterssFileRepoPath + '\\installer\\Data')

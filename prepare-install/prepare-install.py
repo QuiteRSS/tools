@@ -393,7 +393,34 @@ def makeInstaller():
     shutil.rmtree(quiterssFileRepoPath + '\\installer\\Setup')
 
     print 'Done'
+    
 
+def createMD5BuildFiles():
+    buildPath = portablePath + '\\' + strProductVer
+    print "---- Create md5-file for build files in " + buildPath
+    
+    buildFileList = []
+    
+    portableFile = '\\QuiteRSS-' + strProductVer + '.zip'
+    installerFile = '\\QuiteRSS-' + strProductVer + '-Setup.exe'
+    sourcesFile = '\\QuiteRSS-' + strProductVer + '-src.tar.bz2'
+    
+    buildFileList.append(portableFile)
+    buildFileList.append(installerFile)
+    buildFileList.append(sourcesFile)
+    
+    f = open(buildPath + '\\md5.txt', 'w')
+    for file in buildFileList:
+        fileName = buildPath + file
+        fileHash = hashlib.md5(open(fileName, 'rb').read()).hexdigest()
+        line = fileHash + ' *' + file[1:]
+        f.write(line + '\n')
+        print line
+
+    f.close()
+    
+    print 'Done'
+    
 
 def finalize():
     print
@@ -419,6 +446,7 @@ def main():
     makePortableVersion()
     makeSources()
     makeInstaller()
+    createMD5BuildFiles()
     createMD5(prepareFileList, preparePath)
     copyMD5()
     packFiles(prepareFileList, preparePath)

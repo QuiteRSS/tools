@@ -4,6 +4,7 @@
 
 @file prepare-install.py
 @author aleksey.hohryakov@gmail.com
+@author egor.shilyaev@gmail.com
 '''
 
 import ConfigParser

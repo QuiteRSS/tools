@@ -14,17 +14,18 @@ import shutil
 import sys
 from subprocess import call
 
-qtsdkPath = 'c:\\QtSDK\\Desktop\\Qt\\4.8.0\\mingw'
-quiterssSourcePath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS"
-quiterssReleasePath = "e:\\Work\\_Useful\\QtProjects\\" \
-        + "QuiteRSS-build-desktop_Release\\release\\target"
-updaterPath = "e:\\Work\\_Useful\\QtProjects\\" \
-        + "QuiteRSS-build-desktop_Release\\release\\target"
-preparePath = "e:\\Work\\_Useful\\QtProjects\\QuiteRSS_prepare-install"
-portablePath = "e:\\Work\\_Useful\\QtProjects"
-quiterssFileRepoPath = 'e:\\Work\\_Useful\\QtProjects\\QuiteRss.File'
-packerPath = 'e:\\Work\\_Utilities\\7za\\7za.exe'
-innoSetupCompilerPath = 'C:\\Program Files\\Inno Setup 5\\Compil32.exe'
+qtsdkPath = 'y:\\Qt\\Qt4.8.5'
+quiterssSourcePath = 'd:\\Temp_D\\Project\\QuiteRSS'
+quiterssBuildPath = 'd:\\Temp_D\\Project\\QuiteRSS-build-desktop'
+quiterssReleasePath = 'd:\\Temp_D\\Project\\QuiteRSS-build-desktop\\release\\target'
+updaterPath = 'd:\\Temp_D\\Project\\!QuiteRSS\\build-updater-Desktop\\release\\target'
+preparePath = 'd:\\Temp_D\\Project\\!QuiteRSS\\prepare-install-build'
+portablePath = 'd:\\Programming\\Version'
+quiterssFileRepoPath = 'd:\\Temp_D\\Project\\!QuiteRSS\\file'
+packerPath = 'd:\\Temp_D\\Project\\!QuiteRSS\\build-updater-Desktop\\release\\target\\7za.exe'
+innoSetupCompilerPath = 'c:\\Program Files\\Inno Setup 5\\Compil32.exe'
+
+isTestBuild = 0
 
 # Список файлов состоит из относительного пути папки, содержащей файл,
 # и имени файла, который необходимо скопировать
@@ -89,6 +90,7 @@ filesFromQtSDKBin = [
 ]
 
 strProductVer = '0.0.0'
+strProductRev = '0'
 prepareFileList = []
 
 
@@ -132,6 +134,47 @@ def getProductVer():
 
     print 'Done'
 
+
+def getProductRev():
+    print '---- Geting product revision'
+    
+    global strProductRev
+
+    with open(quiterssSourcePath + '\\src\\VersionRev.h') as f:
+        fileLines = f.readlines()
+        f.close()
+
+    for line in fileLines:
+        l = line.split()
+        if len(l) < 3:
+            continue
+        if l[1] == 'VCS_REVISION':
+            strProductRev = l[2]
+
+    print 'Product revision is ' + strProductRev
+
+    print 'Done'
+
+
+def makeBin():
+    print "---- Making bin..."
+    
+    os.chdir(quiterssBuildPath)
+    
+    callLine = 'make clean'
+    print 'call(' + callLine + ')'
+    call(callLine)
+    
+    callLine = 'qmake -r CONFIG+=release ' + quiterssSourcePath + "\\QuiteRSS.pro"
+    print 'call(' + callLine + ')'
+    call(callLine)
+    
+    callLine = 'make -j3'
+    print 'call(' + callLine + ')'
+    call(callLine)
+
+    print "Done"
+    
 
 def copyLangFiles():
     print "---- Copying language files..."
@@ -264,6 +307,7 @@ def readConfigFile():
     global quiterssFileRepoPath
     global packerPath
     global innoSetupCompilerPath
+    global isTestBuild
 
     configFileName = os.path.basename(sys.argv[0]).replace('.py', '.ini')
     print '---- Reading config file: ' + configFileName
@@ -276,9 +320,11 @@ def readConfigFile():
     config.optionxform = str
     config.read(configFileName)
     print config.items('paths')
+    print config.items('flags')
 
     qtsdkPath = config.get('paths', 'qtsdkPath')
     quiterssSourcePath = config.get('paths', 'quiterssSourcePath')
+    quiterssBuildPath = config.get('paths', 'quiterssBuildPath')
     quiterssReleasePath = config.get('paths', 'quiterssReleasePath')
     updaterPath = config.get('paths', 'updaterPath')
     preparePath = config.get('paths', 'preparePath')
@@ -288,6 +334,8 @@ def readConfigFile():
     packerPath = config.get('paths', 'packerPath')
     if (config.has_option('paths', 'innoSetupCompilerPath')):
         innoSetupCompilerPath = config.get('paths', 'innoSetupCompilerPath')
+           
+    isTestBuild = config.getint('flags', 'isTestBuild')
 
     print 'Done'
 
@@ -301,6 +349,7 @@ def writeConfigFile():
     config.add_section('paths')
     config.set('paths', 'qtsdkPath', qtsdkPath)
     config.set('paths', 'quiterssSourcePath', quiterssSourcePath)
+    config.set('paths', 'quiterssBuildPath', quiterssBuildPath)
     config.set('paths', 'quiterssReleasePath', quiterssReleasePath)
     config.set('paths', 'updaterPath', updaterPath)
     config.set('paths', 'preparePath', preparePath)
@@ -308,7 +357,9 @@ def writeConfigFile():
     config.set('paths', 'quiterssFileRepoPath', quiterssFileRepoPath)
     config.set('paths', 'packerPath', packerPath)
     config.set('paths', 'innoSetupCompilerPath', innoSetupCompilerPath)
-    print config.items('paths')
+    
+    config.add_section('flags')
+    config.set('flags', 'isTestBuild', str(isTestBuild))
 
     # Writing our configuration to file
     with open(configFileName, 'wb') as configfile:
@@ -318,8 +369,12 @@ def writeConfigFile():
 
 
 def makePortableVersion():
-    portableTempPath = portablePath + '\\' + strProductVer + '\\QuiteRSS-' + strProductVer
-    print '---- Makeing portable version in ' + portableTempPath
+    if (isTestBuild != 1):
+        portableTempPath = portablePath + '\\push\\' + strProductVer + '\\QuiteRSS-' + strProductVer
+    else:
+        portableTempPath = portablePath + '\\test\\QuiteRSS-' + strProductVer + '.' + strProductRev
+        
+    print '---- Makeing portable version akeing portable version in ' + portableTempPath
 
     if (os.path.exists(portableTempPath)):
         print "Path exists. Remove it"
@@ -437,7 +492,9 @@ def main():
     print "QuiteRSS prepare-install"
     readConfigFile()
     getProductVer()
+    getProductRev()
     createPreparePath(preparePath)
+    makeBin()
     copyLangFiles()
     copyFileList(filesFromRelease, quiterssReleasePath)
     copyFileList(filesFromUpdater, updaterPath)
@@ -445,15 +502,16 @@ def main():
     copyFileList(filesFromQtSDKPlugins, qtsdkPath + '\\plugins')
     copyFileList(filesFromQtSDKBin, qtsdkPath + '\\bin')
     makePortableVersion()
-    makeSources()
-    makeInstaller()
-    createMD5BuildFiles()
-    createMD5(prepareFileList, preparePath)
-    copyMD5()
-    packFiles(prepareFileList, preparePath)
-    copyPackedFiles()
-    if (len(sys.argv) < 2) or (sys.argv[1] != '--dry-run'):
-        updateFileRepo()
+    if (isTestBuild != 1):
+        makeSources()
+        makeInstaller()
+        createMD5BuildFiles()
+        createMD5(prepareFileList, preparePath)
+        copyMD5()
+        packFiles(prepareFileList, preparePath)
+        copyPackedFiles()
+        if (len(sys.argv) < 2) or (sys.argv[1] != '--dry-run'):
+            updateFileRepo()
     deletePreparePath(preparePath)
     writeConfigFile()
     finalize()

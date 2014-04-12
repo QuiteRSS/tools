@@ -15,12 +15,15 @@ import sys
 from subprocess import call
 
 qtsdkPath = 'y:\\Qt\\Qt4.8.5'
+mingwPath = 'y:\\Qt\\Qt4.8.4\\mingw'
 quiterssSourcePath = 'd:\\Temp_D\\Project\\QuiteRSS'
 quiterssBuildPath = 'd:\\Temp_D\\Project\\QuiteRSS-build-desktop'
 quiterssReleasePath = 'd:\\Temp_D\\Project\\QuiteRSS-build-desktop\\release\\target'
 updaterPath = 'd:\\Temp_D\\Project\\!QuiteRSS\\build-updater-Desktop\\release\\target'
 preparePath = 'd:\\Temp_D\\Project\\!QuiteRSS\\prepare-install-build'
-portablePath = 'd:\\Programming\\Version'
+prepareBinPath = 'd:\\Temp_D\\Project\\!QuiteRSS\\prepare-install-build\\release'
+packagesPath = 'd:\\Programming\\Version\\push'
+testPackagesPath = 'd:\\Programming\\YandexDisk\\QuiteRSS-test'
 quiterssFileRepoPath = 'd:\\Temp_D\\Project\\!QuiteRSS\\file'
 packerPath = 'd:\\Temp_D\\Project\\!QuiteRSS\\build-updater-Desktop\\release\\target\\7za.exe'
 innoSetupCompilerPath = 'c:\\Program Files\\Inno Setup 5\\Compil32.exe'
@@ -94,7 +97,7 @@ strProductRev = '0'
 prepareFileList = []
 
 
-def createPreparePath(path):
+def createPath(path):
     print "---- Preparing path: " + path
     if (os.path.exists(path)):
         print "Path exists. Remove it"
@@ -104,7 +107,7 @@ def createPreparePath(path):
     print "Path created"
 
 
-def deletePreparePath(path):
+def deletePath(path):
     print "---- Deleting path: " + path
 
     if (os.path.exists(path)):
@@ -159,19 +162,34 @@ def getProductRev():
 def makeBin():
     print "---- Making bin..."
     
+    curWorkPath = os.getcwd()
     os.chdir(quiterssBuildPath)
+       
+    # callLine = 'set PATH=' + qtsdkPath + '\\bin'
+    # print 'os.system(' + callLine + ')'
+    # os.system(callLine)
     
-    callLine = 'make clean'
+    # callLine = 'set PATH=%PATH%;' + mingwPath + '\\bin'
+    # print 'os.system(' + callLine + ')'
+    # os.system(callLine)
+    
+    # callLine = 'set PATH=%PATH%;%SystemRoot%\\System32'
+    # print 'os.system(' + callLine + ')'
+    # os.system(callLine)
+    
+    callLine = mingwPath + '\\bin\\mingw32-make clean'
     print 'call(' + callLine + ')'
     call(callLine)
     
-    callLine = 'qmake -r CONFIG+=release ' + quiterssSourcePath + "\\QuiteRSS.pro"
+    callLine = 'qmake -r -spec win32-g++ CONFIG+=release ' + quiterssSourcePath + "\\QuiteRSS.pro"
     print 'call(' + callLine + ')'
     call(callLine)
     
-    callLine = 'make -j3'
+    callLine = 'mingw32-make'
     print 'call(' + callLine + ')'
     call(callLine)
+    
+    os.chdir(curWorkPath)
 
     print "Done"
     
@@ -179,11 +197,11 @@ def makeBin():
 def copyLangFiles():
     print "---- Copying language files..."
 
-    shutil.copytree(quiterssReleasePath + "\\lang", preparePath + "\\lang")
-    shutil.copystat(quiterssReleasePath + "\\lang", preparePath + "\\lang")
+    shutil.copytree(quiterssReleasePath + "\\lang", prepareBinPath + "\\lang")
+    shutil.copystat(quiterssReleasePath + "\\lang", prepareBinPath + "\\lang")
 
     global prepareFileList
-    langFiles = os.listdir(preparePath + "\\lang")
+    langFiles = os.listdir(prepareBinPath + "\\lang")
     for langFile in langFiles:
         langPath = '\\lang\\' + langFile
         print langPath
@@ -205,13 +223,13 @@ def copyFileList(fileList, src):
         print file[ID_DIR] + '\\' + file[ID_NAME]
 
         # Если есть имя папки, то создаём её
-        if file[ID_DIR] and (not os.path.exists(preparePath + file[ID_DIR])):
-            os.makedirs(preparePath + file[ID_DIR])
+        if file[ID_DIR] and (not os.path.exists(prepareBinPath + file[ID_DIR])):
+            os.makedirs(prepareBinPath + file[ID_DIR])
 
         # Копируем файл, обрабатывая ошибки
         try:
             shutil.copy2(src + file[ID_DIR] + '\\' + file[ID_NAME],
-                    preparePath + file[ID_DIR] + '\\' + file[ID_NAME])
+                    prepareBinPath + file[ID_DIR] + '\\' + file[ID_NAME])
         except (IOError, os.error), why:
             print str(why)
 
@@ -240,7 +258,7 @@ def createMD5(fileList, path):
 
 def copyMD5():
     print "---- Copying md5-file to quiterss.file-repo"
-    shutil.copy2(preparePath + '\\file_list.md5',
+    shutil.copy2(prepareBinPath + '\\file_list.md5',
             quiterssFileRepoPath + '\\file_list.md5')
     print "Done"
 
@@ -268,7 +286,7 @@ def copyPackedFiles():
 
     for file in prepareFileList7z:
         print 'copying: ' + file
-        shutil.copy2(preparePath + file,
+        shutil.copy2(prepareBinPath + file,
                 quiterssFileRepoPath + '\\windows' + file)
 
     print 'Done'
@@ -299,15 +317,17 @@ def updateFileRepo():
 
 def readConfigFile():
     global qtsdkPath
+    global mingwPath
     global quiterssSourcePath
     global quiterssReleasePath
     global updaterPath
     global preparePath
-    global portablePath
+    global prepareBinPath
+    global packagesPath
+    global testPackagesPath
     global quiterssFileRepoPath
     global packerPath
     global innoSetupCompilerPath
-    global isTestBuild
 
     configFileName = os.path.basename(sys.argv[0]).replace('.py', '.ini')
     print '---- Reading config file: ' + configFileName
@@ -320,22 +340,20 @@ def readConfigFile():
     config.optionxform = str
     config.read(configFileName)
     print config.items('paths')
-    print config.items('flags')
 
     qtsdkPath = config.get('paths', 'qtsdkPath')
+    mingwPath = config.get('paths', 'mingwPath')
     quiterssSourcePath = config.get('paths', 'quiterssSourcePath')
     quiterssBuildPath = config.get('paths', 'quiterssBuildPath')
-    quiterssReleasePath = config.get('paths', 'quiterssReleasePath')
+    quiterssReleasePath = quiterssBuildPath + '\\release\\target'
     updaterPath = config.get('paths', 'updaterPath')
     preparePath = config.get('paths', 'preparePath')
-    if (config.has_option('paths', 'portablePath')):
-        portablePath = config.get('paths', 'portablePath')
+    prepareBinPath = preparePath + '\\release'
+    packagesPath = config.get('paths', 'packagesPath')
+    testPackagesPath = config.get('paths', 'testPackagesPath')
     quiterssFileRepoPath = config.get('paths', 'quiterssFileRepoPath')
     packerPath = config.get('paths', 'packerPath')
-    if (config.has_option('paths', 'innoSetupCompilerPath')):
-        innoSetupCompilerPath = config.get('paths', 'innoSetupCompilerPath')
-           
-    isTestBuild = config.getint('flags', 'isTestBuild')
+    innoSetupCompilerPath = config.get('paths', 'innoSetupCompilerPath')
 
     print 'Done'
 
@@ -348,18 +366,16 @@ def writeConfigFile():
     config.optionxform = str
     config.add_section('paths')
     config.set('paths', 'qtsdkPath', qtsdkPath)
+    config.set('paths', 'mingwPath', mingwPath)
     config.set('paths', 'quiterssSourcePath', quiterssSourcePath)
     config.set('paths', 'quiterssBuildPath', quiterssBuildPath)
-    config.set('paths', 'quiterssReleasePath', quiterssReleasePath)
     config.set('paths', 'updaterPath', updaterPath)
     config.set('paths', 'preparePath', preparePath)
-    config.set('paths', 'portablePath', portablePath)
+    config.set('paths', 'packagesPath', packagesPath)
+    config.set('paths', 'testPackagesPath', testPackagesPath)
     config.set('paths', 'quiterssFileRepoPath', quiterssFileRepoPath)
     config.set('paths', 'packerPath', packerPath)
     config.set('paths', 'innoSetupCompilerPath', innoSetupCompilerPath)
-    
-    config.add_section('flags')
-    config.set('flags', 'isTestBuild', str(isTestBuild))
 
     # Writing our configuration to file
     with open(configFileName, 'wb') as configfile:
@@ -370,38 +386,47 @@ def writeConfigFile():
 
 def makePortableVersion():
     if (isTestBuild != 1):
-        portableTempPath = portablePath + '\\push\\' + strProductVer + '\\QuiteRSS-' + strProductVer
+        path = packagesPath + '\\push\\' + strProductVer
+        nameFile = 'QuiteRSS-' + strProductVer
     else:
-        portableTempPath = portablePath + '\\test\\QuiteRSS-' + strProductVer + '.' + strProductRev
+        path = testPackagesPath
+        nameFile = 'QuiteRSS-' + strProductVer + '.' + strProductRev
+    tempPath = preparePath + '\\' + nameFile
         
-    print '---- Makeing portable version akeing portable version in ' + portableTempPath
-
-    if (os.path.exists(portableTempPath)):
+    print '---- Makeing portable version akeing portable version in ' + path
+    
+    if (os.path.exists(path)):
         print "Path exists. Remove it"
-        shutil.rmtree(portableTempPath)
+        shutil.rmtree(path, True)
+
+    if (os.path.exists(tempPath)):
+        print "Path exists. Remove it"
+        shutil.rmtree(tempPath)
 
     print 'Copying files...'
-    shutil.copytree(preparePath, portableTempPath)
-    shutil.copystat(preparePath, portableTempPath)
+    shutil.copytree(prepareBinPath, tempPath)
+    shutil.copystat(prepareBinPath, tempPath)
 
     print 'Creating portable.dat...'
-    f = open(portableTempPath + '\\portable.dat', 'w')
+    f = open(tempPath + '\\portable.dat', 'w')
     f.close()
 
     print 'Pack folder...'
-    packCmdLine = packerPath \
-        + ' a "' + portableTempPath + '.zip" "' + portableTempPath + '"'
+    packCmdLine = packerPath + ' a "' + tempPath + '.zip" "' + tempPath + '"'
     print 'subprocess.call(' + packCmdLine + ')'
     call(packCmdLine)
+    
+    print 'Copying portable package...'
+    shutil.copy2(tempPath + '.zip', path + '\\' + nameFile + '.zip')
 
-    print 'Remove folder...'
-    shutil.rmtree(portableTempPath)
+    print 'Remove temp folder...'
+    shutil.rmtree(tempPath)
 
     print 'Done'
 
 
 def makeSources():
-    sourcesTempPath = portablePath + '\\' + strProductVer + '\\QuiteRSS-' + strProductVer + '-src'
+    sourcesTempPath = packagesPath + '\\' + strProductVer + '\\QuiteRSS-' + strProductVer + '-src'
     print '---- Making sources in ' + sourcesTempPath
 
     if (os.path.exists(sourcesTempPath)):
@@ -410,7 +435,6 @@ def makeSources():
 
     if (os.path.exists(sourcesTempPath + '.tar.bz2')):
         print "File exists. Remove it"
-        # shutil.rmtree(sourcesTempPath)
         os.remove(sourcesTempPath + '.tar.bz2')
 
     print 'Export mercurial sources...'
@@ -431,8 +455,8 @@ def makeInstaller():
         shutil.rmtree(quiterssFileDataPath)
 
     print 'Copying files...'
-    shutil.copytree(preparePath, quiterssFileDataPath)
-    shutil.copystat(preparePath, quiterssFileDataPath)
+    shutil.copytree(prepareBinPath, quiterssFileDataPath)
+    shutil.copystat(prepareBinPath, quiterssFileDataPath)
 
     print 'Run Inno Setup compiler...'
     cmdLine = [innoSetupCompilerPath,
@@ -442,7 +466,7 @@ def makeInstaller():
 
     print 'Copying installer...'
     shutil.copy2(quiterssFileRepoPath + '\\installer\\Setup\\QuiteRSS-'
-        + strProductVer + '-Setup.exe', portablePath + '\\' + strProductVer)
+        + strProductVer + '-Setup.exe', packagesPath + '\\' + strProductVer)
 
     print 'Cleanup installer files...'
     shutil.rmtree(quiterssFileRepoPath + '\\installer\\Data')
@@ -451,23 +475,26 @@ def makeInstaller():
     print 'Done'
     
 
-def createMD5BuildFiles():
-    buildPath = portablePath + '\\' + strProductVer
-    print "---- Create md5-file for build files in " + buildPath
+def createMD5Packages():
+    if (isTestBuild != 1):
+        path = packagesPath + '\\' + strProductVer
+    else:
+        path = testPackagesPath
     
-    buildFileList = []
+    print "---- Create md5-file for packages in " + path
     
-    portableFile = '\\QuiteRSS-' + strProductVer + '.zip'
-    installerFile = '\\QuiteRSS-' + strProductVer + '-Setup.exe'
-    sourcesFile = '\\QuiteRSS-' + strProductVer + '-src.tar.bz2'
+    packagesList = []
     
-    buildFileList.append(portableFile)
-    buildFileList.append(installerFile)
-    buildFileList.append(sourcesFile)
+    if (isTestBuild != 1):
+        packagesList.append('\\QuiteRSS-' + strProductVer + '.zip')
+        packagesList.append('\\QuiteRSS-' + strProductVer + '-Setup.exe')
+        packagesList.append('\\QuiteRSS-' + strProductVer + '-src.tar.bz2')
+    else:
+        packagesList.append('\\QuiteRSS-' + strProductVer + '.' + strProductRev + '.zip')
     
-    f = open(buildPath + '\\md5.txt', 'w')
-    for file in buildFileList:
-        fileName = buildPath + file
+    f = open(path + '\\md5.txt', 'w')
+    for file in packagesList:
+        fileName = path + file
         fileHash = hashlib.md5(open(fileName, 'rb').read()).hexdigest()
         line = fileHash + ' *' + file[1:]
         f.write(line + '\n')
@@ -490,10 +517,16 @@ def finalize():
 
 def main():
     print "QuiteRSS prepare-install"
+    global isTestBuild
+    
+    if (sys.argv[1] == '--build-test'):
+        isTestBuild = 1
+        print 'Build test version'
+    
     readConfigFile()
     getProductVer()
     getProductRev()
-    createPreparePath(preparePath)
+    createPath(prepareBinPath)
     makeBin()
     copyLangFiles()
     copyFileList(filesFromRelease, quiterssReleasePath)
@@ -505,16 +538,18 @@ def main():
     if (isTestBuild != 1):
         makeSources()
         makeInstaller()
-        createMD5BuildFiles()
         createMD5(prepareFileList, preparePath)
         copyMD5()
         packFiles(prepareFileList, preparePath)
         copyPackedFiles()
         if (len(sys.argv) < 2) or (sys.argv[1] != '--dry-run'):
             updateFileRepo()
-    deletePreparePath(preparePath)
+    createMD5Packages()
+        
+    deletePath(preparePath)
     writeConfigFile()
     finalize()
+
 
 if __name__ == '__main__':
     main()

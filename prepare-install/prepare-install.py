@@ -524,10 +524,10 @@ def main():
         print 'Build test version'
     
     readConfigFile()
-    getProductVer()
-    getProductRev()
     createPath(prepareBinPath)
     makeBin()
+    getProductVer()
+    getProductRev()
     copyLangFiles()
     copyFileList(filesFromRelease, quiterssReleasePath)
     copyFileList(filesFromUpdater, updaterPath)

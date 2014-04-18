@@ -97,13 +97,14 @@ strProductRev = '0'
 prepareFileList = []
 
 
-def createPath(path):
-    print "---- Preparing path: " + path
+def createPath(path, ignore_errors=False):
+    print "---- Creating path: " + path
     if (os.path.exists(path)):
         print "Path exists. Remove it"
-        shutil.rmtree(path)
+        shutil.rmtree(path, ignore_errors)
 
-    os.makedirs(path)
+    if (not os.path.exists(path)):
+        os.makedirs(path)
     print "Path created"
 
 
@@ -185,7 +186,7 @@ def makeBin():
     print 'call(' + callLine + ')'
     call(callLine)
     
-    callLine = 'mingw32-make'
+    callLine = 'mingw32-make -j3'
     print 'call(' + callLine + ')'
     call(callLine)
     
@@ -386,22 +387,15 @@ def writeConfigFile():
 
 def makePortableVersion():
     if (isTestBuild != 1):
-        path = packagesPath + '\\push\\' + strProductVer
         nameFile = 'QuiteRSS-' + strProductVer
     else:
-        path = testPackagesPath
         nameFile = 'QuiteRSS-' + strProductVer + '.' + strProductRev
     tempPath = preparePath + '\\' + nameFile
         
-    print '---- Makeing portable version akeing portable version in ' + path
+    print '---- Makeing portable version akeing portable version in ' + packagesPath
     
-    if (os.path.exists(path)):
-        print "Path exists. Remove it"
-        shutil.rmtree(path, True)
-
-    if (os.path.exists(tempPath)):
-        print "Path exists. Remove it"
-        shutil.rmtree(tempPath)
+    createPath(packagesPath, True)
+    deletePath(tempPath)
 
     print 'Copying files...'
     shutil.copytree(prepareBinPath, tempPath)
@@ -417,7 +411,7 @@ def makePortableVersion():
     call(packCmdLine)
     
     print 'Copying portable package...'
-    shutil.copy2(tempPath + '.zip', path + '\\' + nameFile + '.zip')
+    shutil.copy2(tempPath + '.zip', packagesPath + '\\' + nameFile + '.zip')
 
     print 'Remove temp folder...'
     shutil.rmtree(tempPath)
@@ -426,7 +420,7 @@ def makePortableVersion():
 
 
 def makeSources():
-    sourcesTempPath = packagesPath + '\\' + strProductVer + '\\QuiteRSS-' + strProductVer + '-src'
+    sourcesTempPath = packagesPath + '\\QuiteRSS-' + strProductVer + '-src'
     print '---- Making sources in ' + sourcesTempPath
 
     if (os.path.exists(sourcesTempPath)):
@@ -466,7 +460,7 @@ def makeInstaller():
 
     print 'Copying installer...'
     shutil.copy2(quiterssFileRepoPath + '\\installer\\Setup\\QuiteRSS-'
-        + strProductVer + '-Setup.exe', packagesPath + '\\' + strProductVer)
+        + strProductVer + '-Setup.exe', packagesPath)
 
     print 'Cleanup installer files...'
     shutil.rmtree(quiterssFileRepoPath + '\\installer\\Data')
@@ -476,12 +470,7 @@ def makeInstaller():
     
 
 def createMD5Packages():
-    if (isTestBuild != 1):
-        path = packagesPath + '\\' + strProductVer
-    else:
-        path = testPackagesPath
-    
-    print "---- Create md5-file for packages in " + path
+    print "---- Create md5-file for packages in " + packagesPath
     
     packagesList = []
     
@@ -492,9 +481,9 @@ def createMD5Packages():
     else:
         packagesList.append('\\QuiteRSS-' + strProductVer + '.' + strProductRev + '.zip')
     
-    f = open(path + '\\md5.txt', 'w')
+    f = open(packagesPath + '\\md5.txt', 'w')
     for file in packagesList:
-        fileName = path + file
+        fileName = packagesPath + file
         fileHash = hashlib.md5(open(fileName, 'rb').read()).hexdigest()
         line = fileHash + ' *' + file[1:]
         f.write(line + '\n')
@@ -518,6 +507,7 @@ def finalize():
 def main():
     print "QuiteRSS prepare-install"
     global isTestBuild
+    global packagesPath
     
     if (sys.argv[1] == '--build-test'):
         isTestBuild = 1
@@ -528,6 +518,12 @@ def main():
     makeBin()
     getProductVer()
     getProductRev()
+    
+    if (isTestBuild != 1):
+        packagesPath = packagesPath + '\\' + strProductVer
+    else:
+        packagesPath = testPackagesPath
+    
     copyLangFiles()
     copyFileList(filesFromRelease, quiterssReleasePath)
     copyFileList(filesFromUpdater, updaterPath)
@@ -538,16 +534,15 @@ def main():
     if (isTestBuild != 1):
         makeSources()
         makeInstaller()
-        createMD5(prepareFileList, preparePath)
+        createMD5(prepareFileList, prepareBinPath)
         copyMD5()
-        packFiles(prepareFileList, preparePath)
+        packFiles(prepareFileList, prepareBinPath)
         copyPackedFiles()
         if (len(sys.argv) < 2) or (sys.argv[1] != '--dry-run'):
             updateFileRepo()
     createMD5Packages()
         
     deletePath(preparePath)
-    writeConfigFile()
     finalize()
 
 

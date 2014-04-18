@@ -509,7 +509,7 @@ def main():
     global isTestBuild
     global packagesPath
     
-    if (sys.argv[1] == '--build-test'):
+    if (len(sys.argv) > 1) and (sys.argv[1] == '--build-test'):
         isTestBuild = 1
         print 'Build test version'
     

@@ -44,6 +44,7 @@ filesFromSource = [
     ['\\style', 'system.qss'],
     ['\\style', 'system2.qss'],
     ['\\style', 'news.css'],
+    ['\\style', 'Rstyle_v1.2.css'],
     ['', 'AUTHORS'],
     ['', 'COPYING'],
     ['', 'HISTORY_EN'],

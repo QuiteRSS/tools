@@ -28,7 +28,11 @@ quiterssFileRepoPath = 'd:\\Temp_D\\Project\\!QuiteRSS\\file'
 packerPath = 'd:\\Temp_D\\Project\\!QuiteRSS\\build-updater-Desktop\\release\\target\\7za.exe'
 innoSetupCompilerPath = 'c:\\Program Files\\Inno Setup 5\\Compil32.exe'
 
-isTestBuild = 0
+serverFtp = 'server.org'
+userFtp = 'user'
+passFtp = 'pass'
+
+operationType = 0
 
 # Список файлов состоит из относительного пути папки, содержащей файл,
 # и имени файла, который необходимо скопировать
@@ -330,6 +334,10 @@ def readConfigFile():
     global quiterssFileRepoPath
     global packerPath
     global innoSetupCompilerPath
+    
+    global serverFtp
+    global userFtp
+    global passFtp
 
     configFileName = os.path.basename(sys.argv[0]).replace('.py', '.ini')
     print '---- Reading config file: ' + configFileName
@@ -356,6 +364,10 @@ def readConfigFile():
     quiterssFileRepoPath = config.get('paths', 'quiterssFileRepoPath')
     packerPath = config.get('paths', 'packerPath')
     innoSetupCompilerPath = config.get('paths', 'innoSetupCompilerPath')
+      
+    serverFtp = config.get('ftp', 'serverFtp')
+    userFtp = config.get('ftp', 'userFtp')
+    passFtp = config.get('ftp', 'passFtp')
 
     print 'Done'
 
@@ -387,7 +399,7 @@ def writeConfigFile():
 
 
 def makePortableVersion():
-    if (isTestBuild != 1):
+    if (operationType != 1):
         nameFile = 'QuiteRSS-' + strProductVer
     else:
         nameFile = 'QuiteRSS-' + strProductVer + '.' + strProductRev
@@ -472,21 +484,15 @@ def makeInstaller():
 
 def createMD5Packages():
     print "---- Create md5-file for packages in " + packagesPath
+        
+    if (os.path.exists(packagesPath + '\\md5.txt')):
+        os.remove(packagesPath + '\\md5.txt')
     
-    packagesList = []
-    
-    if (isTestBuild != 1):
-        packagesList.append('\\QuiteRSS-' + strProductVer + '.zip')
-        packagesList.append('\\QuiteRSS-' + strProductVer + '-Setup.exe')
-        packagesList.append('\\QuiteRSS-' + strProductVer + '-src.tar.bz2')
-    else:
-        packagesList.append('\\QuiteRSS-' + strProductVer + '.' + strProductRev + '.zip')
-    
+    filesList = os.listdir(packagesPath)
     f = open(packagesPath + '\\md5.txt', 'w')
-    for file in packagesList:
-        fileName = packagesPath + file
-        fileHash = hashlib.md5(open(fileName, 'rb').read()).hexdigest()
-        line = fileHash + ' *' + file[1:]
+    for fileName in filesList:
+        fileHash = hashlib.md5(open(packagesPath + '\\' + fileName, 'rb').read()).hexdigest()
+        line = fileHash + ' *' + fileName
         f.write(line + '\n')
         print line
 
@@ -503,47 +509,118 @@ def finalize():
     print '  #  #  #   #  #  ##  #                   '
     print '  ###    ###   #   #  #####      #  #  #  '
     print
+    
+    
+def sendUpdateFilesFtp():
+    print "---- Send update files by FTP"
+    global serverFtp
+    global userFtp
+    global passFtp
+    
+    from ftplib import FTP_TLS
+    ftps = FTP_TLS(serverFtp)
+    ftps.set_debuglevel(1)
+    ftps.login(userFtp, passFtp)
+    ftps.prot_p()
+    ftps.cwd('/files/updates')
+    
+    ftps.storbinary('STOR ' + 'file_list.md5', open(quiterssFileRepoPath + '\\file_list.md5', 'rb'))
+    ftps.storbinary('STOR ' + 'VersionNo.h', open(quiterssSourcePath + '\\src\\VersionNo.h', 'rb'))
+    ftps.storbinary('STOR ' + 'HISTORY_EN', open(quiterssSourcePath + '\\HISTORY_EN', 'rb'))
+    ftps.storbinary('STOR ' + 'HISTORY_RU', open(quiterssSourcePath + '\\HISTORY_RU', 'rb'))
+    
+    prepareFileList7z = []
+    for file in prepareFileList:
+        prepareFileList7z.append(file + '.7z')
+
+    for fileName in prepareFileList7z:
+        ftps.storbinary('STOR ' + 'windows' + fileName.replace('\\','/'), open(quiterssFileRepoPath + '\\windows' + fileName, 'rb'))
+
+    ftps.quit()
+
+    
+def sendPackagesFtp():
+    print "---- Send packages by FTP"
+    global serverFtp
+    global userFtp
+    global passFtp
+
+    from ftplib import FTP_TLS
+    ftps = FTP_TLS(serverFtp)
+    ftps.set_debuglevel(1)
+    ftps.login(userFtp, passFtp)
+    ftps.prot_p()
+    try:
+        ftps.sendcmd('MKD ' + '/files/' + strProductVer)
+    except Exception:
+        print 'Directory already exists'
+    ftps.cwd('/files/' + strProductVer)
+    
+    filesListFtp = ftps.nlst()
+    filesList = os.listdir(packagesPath)
+    newFilesList = [e for e in filesList if not(e in filesListFtp)]
+    
+    for fileName in newFilesList:
+        ftps.storbinary('STOR ' + fileName, open(packagesPath + '\\' + fileName, 'rb'))
+
+    ftps.quit()
 
 
 def main():
-    print "QuiteRSS prepare-install"
-    global isTestBuild
+    print "---- QuiteRSS prepare-install"
+    global operationType
     global packagesPath
     
     if (len(sys.argv) > 1) and (sys.argv[1] == '--build-test'):
-        isTestBuild = 1
-        print 'Build test version'
+        operationType = 1
+        print 'Operation type: Build test version'
+    elif (len(sys.argv) > 1) and (sys.argv[1] == '--send-files'):
+        operationType = 2
+        print 'Operation type: Only sending files by FTP'
+    else:
+        print 'Operation type: Build all packages'
     
     readConfigFile()
-    createPath(prepareBinPath)
-    makeBin()
+    
+    if (operationType != 2):
+        createPath(prepareBinPath)
+        makeBin()
+    
     getProductVer()
     getProductRev()
     
-    if (isTestBuild != 1):
+    if (operationType != 1):
         packagesPath = packagesPath + '\\' + strProductVer
     else:
         packagesPath = testPackagesPath
-    
-    copyLangFiles()
-    copyFileList(filesFromRelease, quiterssReleasePath)
-    copyFileList(filesFromUpdater, updaterPath)
-    copyFileList(filesFromSource, quiterssSourcePath)
-    copyFileList(filesFromQtSDKPlugins, qtsdkPath + '\\plugins')
-    copyFileList(filesFromQtSDKBin, qtsdkPath + '\\bin')
-    makePortableVersion()
-    if (isTestBuild != 1):
-        makeSources()
-        makeInstaller()
-        createMD5(prepareFileList, prepareBinPath)
-        copyMD5()
-        packFiles(prepareFileList, prepareBinPath)
-        copyPackedFiles()
-        if (len(sys.argv) < 2) or (sys.argv[1] != '--dry-run'):
-            updateFileRepo()
-    createMD5Packages()
         
-    deletePath(preparePath)
+    if (operationType != 2):
+        copyLangFiles()
+        copyFileList(filesFromRelease, quiterssReleasePath)
+        copyFileList(filesFromUpdater, updaterPath)
+        copyFileList(filesFromSource, quiterssSourcePath)
+        copyFileList(filesFromQtSDKPlugins, qtsdkPath + '\\plugins')
+        copyFileList(filesFromQtSDKBin, qtsdkPath + '\\bin')
+        makePortableVersion()
+        
+        if (operationType != 1):
+            makeSources()
+            makeInstaller()
+            createMD5(prepareFileList, prepareBinPath)
+            copyMD5()
+            packFiles(prepareFileList, prepareBinPath)
+            copyPackedFiles()
+            if (len(sys.argv) < 2) or (sys.argv[1] != '--dry-run'):
+                updateFileRepo()
+                sendUpdateFilesFtp()
+                
+        deletePath(preparePath)
+        
+    createMD5Packages()
+    
+    if (operationType != 1):
+        sendPackagesFtp()
+        
     finalize()
 
 

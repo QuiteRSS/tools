@@ -298,29 +298,6 @@ def copyPackedFiles():
     print 'Done'
 
 
-def updateFileRepo():
-    print '---- Updating repo: ' + quiterssFileRepoPath
-
-    callLine = 'hg commit --cwd "' + quiterssFileRepoPath + '"' \
-        + ' --addremove --subrepos --message "update windows install files"'
-    print 'call(' + callLine + ')'
-    call(callLine)
-    print ""
-
-    callLine = 'hg log --cwd "' + quiterssFileRepoPath + '"' \
-        + ' --verbose --limit 1'
-    print 'call(' + callLine + ')'
-    call(callLine)
-    print ""
-
-    callLine = 'hg push --cwd "' + quiterssFileRepoPath + '"'
-    print 'call(' + callLine + ')'
-    call(callLine)
-    print ""
-
-    print 'Done'
-
-
 def readConfigFile():
     global qtsdkPath
     global mingwPath
@@ -440,13 +417,13 @@ def makeSources():
         print "Path exists. Remove it"
         shutil.rmtree(sourcesTempPath)
 
-    if (os.path.exists(sourcesTempPath + '.tar.bz2')):
+    if (os.path.exists(sourcesTempPath + '.tar.gz')):
         print "File exists. Remove it"
-        os.remove(sourcesTempPath + '.tar.bz2')
+        os.remove(sourcesTempPath + '.tar.gz')
 
-    print 'Export mercurial sources...'
-    packCmdLine = 'hg archive --cwd ' \
-        + quiterssSourcePath + ' --type tbz2 ' + sourcesTempPath + '.tar.bz2'
+    print 'Export git sources...'
+    packCmdLine = 'git archive master --remote=' \
+        + quiterssSourcePath + ' | gzip > ' + sourcesTempPath + '.tar.gz'
     print 'subprocess.call(' + packCmdLine + ')'
     call(packCmdLine)
 
@@ -611,7 +588,6 @@ def main():
             packFiles(prepareFileList, prepareBinPath)
             copyPackedFiles()
             if (len(sys.argv) < 2) or (sys.argv[1] != '--dry-run'):
-                updateFileRepo()
                 sendUpdateFilesFtp()
                 
         deletePath(preparePath)

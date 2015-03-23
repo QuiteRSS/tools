@@ -19,7 +19,7 @@ SolidCompression=true
 VersionInfoCompany={#_AppPublisher}
 VersionInfoDescription={#_AppName} {#_AppVerName} Setup
 MinVersion=5.0.2195
-AppPublisherURL=http://code.google.com/p/quite-rss/
+AppPublisherURL=http://quiterss.org
 WizardImageFile=logo.bmp
 WizardSmallImageFile=logo55.bmp
 WizardImageStretch=false
@@ -69,7 +69,7 @@ Name: "fi"; MessagesFile: "compiler:Languages\Finnish.isl"
 Name: "sl"; MessagesFile: "compiler:Languages\Slovenian.isl"
 
 [INI]
-Filename: {app}\{#_AppName}.url; Section: InternetShortcut; Key: URL; String: http://code.google.com/p/quite-rss/
+Filename: {app}\{#_AppName}.url; Section: InternetShortcut; Key: URL; String: http://quiterss.org
 
 [UninstallDelete]
 Type: files; Name: {app}\{#_AppName}.url

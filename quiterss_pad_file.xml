@@ -34,9 +34,9 @@
 	</Company_Info>
 	<Program_Info>
 		<Program_Name>QuiteRSS</Program_Name>
-		<Program_Version>0.17.5</Program_Version>
-		<Program_Release_Month>01</Program_Release_Month>
-		<Program_Release_Day>18</Program_Release_Day>
+		<Program_Version>0.17.6</Program_Version>
+		<Program_Release_Month>02</Program_Release_Month>
+		<Program_Release_Day>10</Program_Release_Day>
 		<Program_Release_Year>2015</Program_Release_Year>
 		<Program_Cost_Dollars />
 		<Program_Cost_Other_Code />
@@ -51,8 +51,8 @@
 		<Program_Category_Class>Communications::Newsgroup Clients</Program_Category_Class>
 		<Program_System_Requirements />
 		<File_Info>
-			<File_Size_Bytes>18066742</File_Size_Bytes>
-			<File_Size_K>17643</File_Size_K>
+			<File_Size_Bytes>18070094</File_Size_Bytes>
+			<File_Size_K>17646</File_Size_K>
 			<File_Size_MB>17.23</File_Size_MB>
 		</File_Info>
 		<Expire_Info>
@@ -108,12 +108,12 @@ Open-source</Char_Desc_2000>
 		<Application_URLs>
 			<Application_Info_URL>http://quiterss.org</Application_Info_URL>
 			<Application_Order_URL>http://quiterss.org</Application_Order_URL>
-			<Application_Screenshot_URL>http://file.quite-rss.googlecode.com/hg/screenshots/screenshots01.png</Application_Screenshot_URL>
-			<Application_Icon_URL>http://code.google.com/p/quite-rss/logo?cct=1335331597</Application_Icon_URL>
-			<Application_XML_File_URL>http://file.quite-rss.googlecode.com/hg/quiterss_pad_file.xml</Application_XML_File_URL>
+			<Application_Screenshot_URL>https://github.com/QuiteRSS/tools/raw/master/screenshots/screenshots01.png</Application_Screenshot_URL>
+			<Application_Icon_URL>https://raw.githubusercontent.com/QuiteRSS/tools/master/installer/logo55.bmp</Application_Icon_URL>
+			<Application_XML_File_URL>https://github.com/QuiteRSS/tools/raw/master/quiterss_pad_file.xml</Application_XML_File_URL>
 		</Application_URLs>
 		<Download_URLs>
-			<Primary_Download_URL>http://quiterss.org/files/0.17.5/QuiteRSS-0.17.5.zip</Primary_Download_URL>
+			<Primary_Download_URL>http://quiterss.org/files/0.17.6/QuiteRSS-0.17.6.zip</Primary_Download_URL>
 			<Secondary_Download_URL>http://quiterss.org/en/download</Secondary_Download_URL>
 			<Additional_Download_URL_1 />
 			<Additional_Download_URL_2 />

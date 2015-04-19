@@ -14,19 +14,20 @@ import shutil
 import sys
 from subprocess import call
 
-qtsdkPath = 'y:\\Qt\\Qt4.8.5'
-mingwPath = 'y:\\Qt\\Qt4.8.4\\mingw'
-quiterssSourcePath = 'd:\\Temp_D\\Project\\QuiteRSS'
-quiterssBuildPath = 'd:\\Temp_D\\Project\\QuiteRSS-build-desktop'
-quiterssReleasePath = 'd:\\Temp_D\\Project\\QuiteRSS-build-desktop\\release\\target'
-updaterPath = 'd:\\Temp_D\\Project\\!QuiteRSS\\build-updater-Desktop\\release\\target'
-preparePath = 'd:\\Temp_D\\Project\\!QuiteRSS\\prepare-install-build'
-prepareBinPath = 'd:\\Temp_D\\Project\\!QuiteRSS\\prepare-install-build\\release'
+qtsdkPath = 'c:\\Qt\\4.8.5'
+mingwPath = 'c:\\Qt\\Qt5.4.0\\Tools\\mingw491_32'
+quiterssSourcePath = 'd:\\Programming\\QuiteRSS\\quiterss'
+quiterssBuildPath = 'd:\\Programming\\QuiteRSS\\build-QuiteRSS-Desktop'
+updaterPath = 'd:\\Programming\\QuiteRSS\\build-updater-Desktop\\release\\target'
+preparePath = 'd:\\Programming\\QuiteRSS\\prepare-install-build'
 packagesPath = 'd:\\Programming\\Version\\push'
 testPackagesPath = 'd:\\Programming\\YandexDisk\\QuiteRSS-test'
-quiterssFileRepoPath = 'd:\\Temp_D\\Project\\!QuiteRSS\\file'
-packerPath = 'd:\\Temp_D\\Project\\!QuiteRSS\\build-updater-Desktop\\release\\target\\7za.exe'
-innoSetupCompilerPath = 'c:\\Program Files\\Inno Setup 5\\Compil32.exe'
+quiterssToolsPath = 'd:\\Programming\\QuiteRSS\\tools'
+packerPath = 'd:\\Programming\\QuiteRSS\\build-updater-Desktop\\release\\target\\7za.exe'
+innoSetupCompilerPath = 'c:\\Program Files (x86)\\Inno Setup 5\\Compil32.exe'
+
+quiterssReleasePath = ''
+prepareBinPath = ''
 
 serverFtp = 'server.org'
 userFtp = 'user'
@@ -262,13 +263,6 @@ def createMD5(fileList, path):
     print "Done"
 
 
-def copyMD5():
-    print "---- Copying md5-file to quiterss.file-repo"
-    shutil.copy2(prepareBinPath + '\\file_list.md5',
-            quiterssFileRepoPath + '\\file_list.md5')
-    print "Done"
-
-
 def packFiles(fileList, path):
     '''
     Пакуем каждый файл в индивидуальный архив
@@ -283,21 +277,6 @@ def packFiles(fileList, path):
     print "Done"
 
 
-def copyPackedFiles():
-    print '---- Copying packed files to quiterss.file-repo.windows'
-
-    prepareFileList7z = []
-    for file in prepareFileList:
-        prepareFileList7z.append(file + '.7z')
-
-    for file in prepareFileList7z:
-        print 'copying: ' + file
-        shutil.copy2(prepareBinPath + file,
-                quiterssFileRepoPath + '\\windows' + file)
-
-    print 'Done'
-
-
 def readConfigFile():
     global qtsdkPath
     global mingwPath
@@ -308,7 +287,7 @@ def readConfigFile():
     global prepareBinPath
     global packagesPath
     global testPackagesPath
-    global quiterssFileRepoPath
+    global quiterssToolsPath
     global packerPath
     global innoSetupCompilerPath
     
@@ -338,7 +317,7 @@ def readConfigFile():
     prepareBinPath = preparePath + '\\release'
     packagesPath = config.get('paths', 'packagesPath')
     testPackagesPath = config.get('paths', 'testPackagesPath')
-    quiterssFileRepoPath = config.get('paths', 'quiterssFileRepoPath')
+    quiterssToolsPath = config.get('paths', 'quiterssToolsPath')
     packerPath = config.get('paths', 'packerPath')
     innoSetupCompilerPath = config.get('paths', 'innoSetupCompilerPath')
       
@@ -364,7 +343,7 @@ def writeConfigFile():
     config.set('paths', 'preparePath', preparePath)
     config.set('paths', 'packagesPath', packagesPath)
     config.set('paths', 'testPackagesPath', testPackagesPath)
-    config.set('paths', 'quiterssFileRepoPath', quiterssFileRepoPath)
+    config.set('paths', 'quiterssToolsPath', quiterssToolsPath)
     config.set('paths', 'packerPath', packerPath)
     config.set('paths', 'innoSetupCompilerPath', innoSetupCompilerPath)
 
@@ -422,17 +401,17 @@ def makeSources():
         os.remove(sourcesTempPath + '.tar.gz')
 
     print 'Export git sources...'
-    packCmdLine = 'git archive master --remote=' \
-        + quiterssSourcePath + ' | gzip > ' + sourcesTempPath + '.tar.gz'
+    packCmdLine = 'git archive master --remote="' \
+        + quiterssSourcePath + '" | gzip > "' + sourcesTempPath + '.tar.gz"'
     print 'subprocess.call(' + packCmdLine + ')'
-    call(packCmdLine)
+    os.system(packCmdLine)
 
     print 'Done'
 
 
 def makeInstaller():
     print '---- Making installer...'
-    quiterssFileDataPath = quiterssFileRepoPath + '\\installer\\Data'
+    quiterssFileDataPath = quiterssToolsPath + '\\installer\\Data'
 
     if (os.path.exists(quiterssFileDataPath)):
         print "Path ...\\installer\\Data exists. Remove it"
@@ -444,17 +423,17 @@ def makeInstaller():
 
     print 'Run Inno Setup compiler...'
     cmdLine = [innoSetupCompilerPath,
-        '/cc', quiterssFileRepoPath + '\\installer\\quiterss.iss']
+        '/cc', quiterssToolsPath + '\\installer\\quiterss.iss']
     print 'subprocess.call(' + str(cmdLine) + ')'
     call(cmdLine)
 
     print 'Copying installer...'
-    shutil.copy2(quiterssFileRepoPath + '\\installer\\Setup\\QuiteRSS-'
+    shutil.copy2(quiterssToolsPath + '\\installer\\Setup\\QuiteRSS-'
         + strProductVer + '-Setup.exe', packagesPath)
 
     print 'Cleanup installer files...'
-    shutil.rmtree(quiterssFileRepoPath + '\\installer\\Data')
-    shutil.rmtree(quiterssFileRepoPath + '\\installer\\Setup')
+    shutil.rmtree(quiterssToolsPath + '\\installer\\Data')
+    shutil.rmtree(quiterssToolsPath + '\\installer\\Setup')
 
     print 'Done'
     
@@ -501,7 +480,7 @@ def sendUpdateFilesFtp():
     ftps.prot_p()
     ftps.cwd('/files/updates')
     
-    ftps.storbinary('STOR ' + 'file_list.md5', open(quiterssFileRepoPath + '\\file_list.md5', 'rb'))
+    ftps.storbinary('STOR ' + 'file_list.md5', open(prepareBinPath + '\\file_list.md5', 'rb'))
     ftps.storbinary('STOR ' + 'VersionNo.h', open(quiterssSourcePath + '\\src\\VersionNo.h', 'rb'))
     ftps.storbinary('STOR ' + 'HISTORY_EN', open(quiterssSourcePath + '\\HISTORY_EN', 'rb'))
     ftps.storbinary('STOR ' + 'HISTORY_RU', open(quiterssSourcePath + '\\HISTORY_RU', 'rb'))
@@ -511,7 +490,7 @@ def sendUpdateFilesFtp():
         prepareFileList7z.append(file + '.7z')
 
     for fileName in prepareFileList7z:
-        ftps.storbinary('STOR ' + 'windows' + fileName.replace('\\','/'), open(quiterssFileRepoPath + '\\windows' + fileName, 'rb'))
+        ftps.storbinary('STOR ' + 'windows' + fileName.replace('\\','/'), open(prepareBinPath + fileName, 'rb'))
 
     ftps.quit()
 
@@ -584,9 +563,7 @@ def main():
             makeSources()
             makeInstaller()
             createMD5(prepareFileList, prepareBinPath)
-            copyMD5()
             packFiles(prepareFileList, prepareBinPath)
-            copyPackedFiles()
             if (len(sys.argv) < 2) or (sys.argv[1] != '--dry-run'):
                 sendUpdateFilesFtp()
                 

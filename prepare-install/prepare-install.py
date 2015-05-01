@@ -14,8 +14,9 @@ import shutil
 import sys
 from subprocess import call
 
-qtsdkPath = 'c:\\Qt\\4.8.5'
-mingwPath = 'c:\\Qt\\Qt5.4.0\\Tools\\mingw491_32'
+qtsdkPath = 'c:\\Qt\\4.8.6'
+mingwPath = 'c:\\Qt\\mingw32'
+opensslPath = 'c:\\OpenSSL-Win32'
 quiterssSourcePath = 'd:\\Programming\\QuiteRSS\\quiterss'
 quiterssBuildPath = 'd:\\Programming\\QuiteRSS\\build-QuiteRSS-Desktop'
 updaterPath = 'd:\\Programming\\QuiteRSS\\build-updater-Desktop\\release\\target'
@@ -54,7 +55,7 @@ filesFromSource = [
     ['', 'COPYING'],
     ['', 'HISTORY_EN'],
     ['', 'HISTORY_RU'],
-    ['', 'README']
+    ['', 'README.md']
 ]
 
 filesFromRelease = [
@@ -84,9 +85,9 @@ filesFromQtSDKPlugins = [
 ]
 
 filesFromQtSDKBin = [
-    ['', 'libeay32.dll'],
     ['', 'libgcc_s_dw2-1.dll'],
-    ['', 'mingwm10.dll'],
+    ['', 'libwinpthread-1.dll'],
+    ['', 'libstdc++-6.dll'],
     ['', 'phonon4.dll'],
     ['', 'QtCore4.dll'],
     ['', 'QtGui4.dll'],
@@ -95,6 +96,10 @@ filesFromQtSDKBin = [
     ['', 'QtSvg4.dll'],
     ['', 'QtWebKit4.dll'],
     ['', 'QtXml4.dll'],
+]
+
+filesFromOpenSSL = [
+    ['', 'libeay32.dll'],
     ['', 'ssleay32.dll']
 ]
 
@@ -184,7 +189,7 @@ def makeBin():
     # print 'os.system(' + callLine + ')'
     # os.system(callLine)
     
-    callLine = mingwPath + '\\bin\\mingw32-make clean'
+    callLine = 'mingw32-make clean'
     print 'call(' + callLine + ')'
     call(callLine)
     
@@ -280,6 +285,7 @@ def packFiles(fileList, path):
 def readConfigFile():
     global qtsdkPath
     global mingwPath
+    global opensslPath
     global quiterssSourcePath
     global quiterssReleasePath
     global updaterPath
@@ -309,6 +315,7 @@ def readConfigFile():
 
     qtsdkPath = config.get('paths', 'qtsdkPath')
     mingwPath = config.get('paths', 'mingwPath')
+    opensslPath = config.get('paths', 'opensslPath')
     quiterssSourcePath = config.get('paths', 'quiterssSourcePath')
     quiterssBuildPath = config.get('paths', 'quiterssBuildPath')
     quiterssReleasePath = quiterssBuildPath + '\\release\\target'
@@ -337,6 +344,7 @@ def writeConfigFile():
     config.add_section('paths')
     config.set('paths', 'qtsdkPath', qtsdkPath)
     config.set('paths', 'mingwPath', mingwPath)
+    config.set('paths', 'opensslPath', opensslPath)
     config.set('paths', 'quiterssSourcePath', quiterssSourcePath)
     config.set('paths', 'quiterssBuildPath', quiterssBuildPath)
     config.set('paths', 'updaterPath', updaterPath)
@@ -557,6 +565,7 @@ def main():
         copyFileList(filesFromSource, quiterssSourcePath)
         copyFileList(filesFromQtSDKPlugins, qtsdkPath + '\\plugins')
         copyFileList(filesFromQtSDKBin, qtsdkPath + '\\bin')
+        copyFileList(filesFromOpenSSL, opensslPath + '\\bin')
         makePortableVersion()
         
         if (operationType != 1):

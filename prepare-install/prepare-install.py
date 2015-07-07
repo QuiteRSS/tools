@@ -14,8 +14,8 @@ import shutil
 import sys
 from subprocess import call
 
-qtsdkPath = 'c:\\Qt\\4.8.6'
-mingwPath = 'c:\\Qt\\mingw32'
+qtsdkPath = 'c:\\Qt\\Qt5.4.2\\5.4\\mingw491_32'
+mingwPath = 'c:\\Qt\\Qt5.4.2\\Tools\\mingw491_32'
 opensslPath = 'c:\\OpenSSL-Win32'
 quiterssSourcePath = 'd:\\Programming\\QuiteRSS\\quiterss'
 quiterssBuildPath = 'd:\\Programming\\QuiteRSS\\build-QuiteRSS-Desktop'
@@ -68,34 +68,50 @@ filesFromUpdater = [
 ]
 
 filesFromQtSDKPlugins = [
-    ['\\sqldrivers', 'qsqlite4.dll'],
-    ['\\iconengines', 'qsvgicon4.dll'],
-    ['\\imageformats', 'qgif4.dll'],
-    ['\\imageformats', 'qico4.dll'],
-    ['\\imageformats', 'qjpeg4.dll'],
-    ['\\imageformats', 'qmng4.dll'],
-    ['\\imageformats', 'qsvg4.dll'],
-    ['\\imageformats', 'qtga4.dll'],
-    ['\\imageformats', 'qtiff4.dll'],
-    ['\\phonon_backend', 'phonon_ds94.dll'],
-    ['\\codecs', 'qcncodecs4.dll'],
-    ['\\codecs', 'qjpcodecs4.dll'],
-    ['\\codecs', 'qkrcodecs4.dll'],
-    ['\\codecs', 'qtwcodecs4.dll']
+    ['\\iconengines', 'qsvgicon.dll'],
+    ['\\imageformats', 'qdds.dll'],
+    ['\\imageformats', 'qgif.dll'],
+    ['\\imageformats', 'qico.dll'],
+    ['\\imageformats', 'qjp2.dll'],
+    ['\\imageformats', 'qjpeg.dll'],
+    ['\\imageformats', 'qmng.dll'],
+    ['\\imageformats', 'qsvg.dll'],
+    ['\\imageformats', 'qtga.dll'],
+    ['\\imageformats', 'qtiff.dll'],
+    ['\\imageformats', 'qwbmp.dll'],
+    ['\\imageformats', 'qwebp.dll'],
+    ['\\mediaservice', 'dsengine.dll'],
+    ['\\mediaservice', 'qtmedia_audioengine.dll'],
+    ['\\platforms', 'qwindows.dll'],
+    ['\\printsupport', 'windowsprintersupport.dll'],
+    ['\\sqldrivers', 'qsqlite.dll']
 ]
 
 filesFromQtSDKBin = [
+    ['', 'icudt53.dll'],
+    ['', 'icuin53.dll'],
+    ['', 'icuuc53.dll'],
     ['', 'libgcc_s_dw2-1.dll'],
-    ['', 'libwinpthread-1.dll'],
     ['', 'libstdc++-6.dll'],
-    ['', 'phonon4.dll'],
-    ['', 'QtCore4.dll'],
-    ['', 'QtGui4.dll'],
-    ['', 'QtNetwork4.dll'],
-    ['', 'QtSql4.dll'],
-    ['', 'QtSvg4.dll'],
-    ['', 'QtWebKit4.dll'],
-    ['', 'QtXml4.dll'],
+    ['', 'libwinpthread-1.dll'],
+    ['', 'Qt5Core.dll'],
+    ['', 'Qt5Gui.dll'],
+    ['', 'Qt5Multimedia.dll'],
+    ['', 'Qt5MultimediaWidgets.dll'],
+    ['', 'Qt5Network.dll'],
+    ['', 'Qt5OpenGL.dll'],
+    ['', 'Qt5Positioning.dll'],
+    ['', 'Qt5PrintSupport.dll'],
+    ['', 'Qt5Qml.dll'],
+    ['', 'Qt5Quick.dll'],
+    ['', 'Qt5Sensors.dll'],
+    ['', 'Qt5Sql.dll'],
+    ['', 'Qt5Svg.dll'],
+    ['', 'Qt5WebChannel.dll'],
+    ['', 'Qt5WebKit.dll'],
+    ['', 'Qt5WebKitWidgets.dll'],
+    ['', 'Qt5Widgets.dll'],
+    ['', 'Qt5Xml.dll']
 ]
 
 filesFromOpenSSL = [
@@ -486,7 +502,7 @@ def sendUpdateFilesFtp():
     ftps.set_debuglevel(1)
     ftps.login(userFtp, passFtp)
     ftps.prot_p()
-    ftps.cwd('/files/updates')
+    ftps.cwd('/files/updates_new')
     
     ftps.storbinary('STOR ' + 'file_list.md5', open(prepareBinPath + '\\file_list.md5', 'rb'))
     ftps.storbinary('STOR ' + 'VersionNo.h', open(quiterssSourcePath + '\\src\\VersionNo.h', 'rb'))

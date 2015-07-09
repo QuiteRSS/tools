@@ -35,11 +35,12 @@ PrivilegesRequired=none
 [Files]
 Source: {#_AppName}.exe; DestDir: {app}; Flags: skipifsourcedoesntexist
 Source: Data\*; DestDir: {app};
-Source: Data\codecs\*; DestDir: {app}\codecs;
 Source: Data\iconengines\*; DestDir: {app}\iconengines;
 Source: Data\imageformats\*; DestDir: {app}\imageformats;
 Source: Data\lang\*; DestDir: {app}\lang;
-Source: Data\phonon_backend\*; DestDir: {app}\phonon_backend;
+Source: Data\mediaservice\*; DestDir: {app}\mediaservice;
+Source: Data\platforms\*; DestDir: {app}\platforms;
+Source: Data\printsupport\*; DestDir: {app}\printsupport;
 Source: Data\sound\*; DestDir: {app}\sound;
 Source: Data\sqldrivers\*; DestDir: {app}\sqldrivers;
 Source: Data\style\*; DestDir: {app}\style;

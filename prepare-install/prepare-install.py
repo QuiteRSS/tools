@@ -116,7 +116,8 @@ filesFromQtSDKBin = [
 
 filesFromOpenSSL = [
     ['', 'libeay32.dll'],
-    ['', 'ssleay32.dll']
+    ['', 'ssleay32.dll'],
+    ['', 'msvcr120.dll']
 ]
 
 strProductVer = '0.0.0'
@@ -303,6 +304,7 @@ def readConfigFile():
     global mingwPath
     global opensslPath
     global quiterssSourcePath
+    global quiterssBuildPath
     global quiterssReleasePath
     global updaterPath
     global preparePath
@@ -540,6 +542,7 @@ def sendPackagesFtp():
     filesList = os.listdir(packagesPath)
     newFilesList = [e for e in filesList if not(e in filesListFtp)]
     
+    ftps.storbinary('STOR ' + 'md5.txt', open(packagesPath + '\\md5.txt', 'rb'))
     for fileName in newFilesList:
         ftps.storbinary('STOR ' + fileName, open(packagesPath + '\\' + fileName, 'rb'))
 

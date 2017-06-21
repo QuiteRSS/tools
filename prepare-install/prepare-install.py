@@ -466,12 +466,13 @@ def makeInstaller():
 
 def createMD5Packages():
     print "---- Create md5-file for packages in " + packagesPath
+    packagesMd5File = packagesPath + '\\QuiteRSS-' + strProductVer + '.md5'
         
-    if (os.path.exists(packagesPath + '\\md5.txt')):
-        os.remove(packagesPath + '\\md5.txt')
+    if (os.path.exists(packagesMd5File)):
+        os.remove(packagesMd5File)
     
     filesList = os.listdir(packagesPath)
-    f = open(packagesPath + '\\md5.txt', 'w')
+    f = open(packagesMd5File, 'w')
     for fileName in filesList:
         fileHash = hashlib.md5(open(packagesPath + '\\' + fileName, 'rb').read()).hexdigest()
         line = fileHash + ' *' + fileName
@@ -542,7 +543,6 @@ def sendPackagesFtp():
     filesList = os.listdir(packagesPath)
     newFilesList = [e for e in filesList if not(e in filesListFtp)]
     
-    ftps.storbinary('STOR ' + 'md5.txt', open(packagesPath + '\\md5.txt', 'rb'))
     for fileName in newFilesList:
         ftps.storbinary('STOR ' + fileName, open(packagesPath + '\\' + fileName, 'rb'))
 

@@ -543,6 +543,7 @@ def sendPackagesFtp():
     filesList = os.listdir(packagesPath)
     newFilesList = [e for e in filesList if not(e in filesListFtp)]
     
+    ftps.storbinary('STOR ' + 'md5.txt', open(packagesPath + '\\md5.txt', 'rb'))
     for fileName in newFilesList:
         ftps.storbinary('STOR ' + fileName, open(packagesPath + '\\' + fileName, 'rb'))
 

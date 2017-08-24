@@ -527,6 +527,7 @@ def sendPackagesFtp():
     global serverFtp
     global userFtp
     global passFtp
+    packagesMd5File = packagesPath + '\\QuiteRSS-' + strProductVer + '.md5'
 
     from ftplib import FTP_TLS
     ftps = FTP_TLS(serverFtp)
@@ -543,7 +544,7 @@ def sendPackagesFtp():
     filesList = os.listdir(packagesPath)
     newFilesList = [e for e in filesList if not(e in filesListFtp)]
     
-    ftps.storbinary('STOR ' + 'md5.txt', open(packagesPath + '\\md5.txt', 'rb'))
+    ftps.storbinary('STOR ' + 'QuiteRSS-' + strProductVer + '.md5', open(packagesMd5File, 'rb'))
     for fileName in newFilesList:
         ftps.storbinary('STOR ' + fileName, open(packagesPath + '\\' + fileName, 'rb'))
 

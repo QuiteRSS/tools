@@ -93,16 +93,8 @@ filesFromQtSDKBin = [
     ['', 'icudt59.dll'],
     ['', 'icuin59.dll'],
     ['', 'icuuc59.dll'],
-    
-    ['', 'd3dcompiler_47.dll'],
-    
     ['', 'libxml2.dll'],
-    ['', 'libxslt.dll'],
-    
-    ['', 'libEGL.dll'],
-    ['', 'libGLESV2.dll'],
-    ['', 'opengl32sw.dll'],
-    
+    ['', 'libxslt.dll'], 
     ['', 'Qt5Core.dll'],
     ['', 'Qt5Gui.dll'],
     ['', 'Qt5Multimedia.dll'],
@@ -204,7 +196,11 @@ def makeBin():
     print 'call(' + callLine + ')'
     call(callLine)
     
-    callLine = 'qmake -spec win32-msvc CONFIG+=release ' + quiterssSourcePath + '\\QuiteRSS.pro && jom qmake_all'
+    callLine = 'qmake -spec win32-msvc CONFIG+=release ' + quiterssSourcePath + '\\QuiteRSS.pro'
+    print 'call(' + callLine + ')'
+    call(callLine)
+
+    callLine = 'jom qmake_all'
     print 'call(' + callLine + ')'
     call(callLine)
     

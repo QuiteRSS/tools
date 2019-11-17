@@ -11,7 +11,7 @@ AppName={#_AppName}
 AppVersion={#_AppVerName}
 AppPublisher={#_AppPublisher}
 VersionInfoVersion={#_AppVersion}
-DefaultDirName={pf}\{#_AppName}
+DefaultDirName={autopf}\{#_AppName}
 DefaultGroupName={#_AppName}
 Compression=lzma/Max
 InternalCompressLevel=Max
@@ -23,7 +23,6 @@ AppPublisherURL=http://quiterss.org
 WizardImageFile=logo.bmp
 WizardSmallImageFile=logo55.bmp
 WizardImageStretch=false
-WizardImageBackColor=clWhite
 OutputDir=Setup
 OutputBaseFilename={#_AppName}-{#_AppVerName}-Setup
 RestartIfNeededByRun=false
@@ -35,6 +34,8 @@ PrivilegesRequired=none
 [Files]
 Source: {#_AppName}.exe; DestDir: {app}; Flags: skipifsourcedoesntexist
 Source: Data\*; DestDir: {app};
+Source: Data\audio\*; DestDir: {app}\audio;
+Source: Data\bearer\*; DestDir: {app}\bearer;
 Source: Data\iconengines\*; DestDir: {app}\iconengines;
 Source: Data\imageformats\*; DestDir: {app}\imageformats;
 Source: Data\lang\*; DestDir: {app}\lang;
@@ -44,6 +45,7 @@ Source: Data\printsupport\*; DestDir: {app}\printsupport;
 Source: Data\sound\*; DestDir: {app}\sound;
 Source: Data\sqldrivers\*; DestDir: {app}\sqldrivers;
 Source: Data\style\*; DestDir: {app}\style;
+Source: Data\styles\*; DestDir: {app}\styles;
 
 [Icons]
 Name: {group}\{#_AppName}; Filename: {app}\{#_AppName}.exe; WorkingDir: {app}
@@ -67,6 +69,9 @@ Name: "sl"; MessagesFile: "compiler:Languages\Slovenian.isl"
 
 [INI]
 Filename: {app}\{#_AppName}.url; Section: InternetShortcut; Key: URL; String: http://quiterss.org
+
+[InstallDelete]
+Type: files; Name: {app}\*
 
 [UninstallDelete]
 Type: files; Name: {app}\{#_AppName}.url

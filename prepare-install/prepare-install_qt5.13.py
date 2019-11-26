@@ -25,6 +25,7 @@ testPackagesPath = 'd:\\Programming\\YandexDisk\\QuiteRSS-test'
 quiterssToolsPath = 'd:\\Programming\\QuiteRSS\\tools'
 packerPath = 'd:\\Programming\\QuiteRSS\\build-updater-Desktop\\release\\target\\7za.exe'
 innoSetupCompilerPath = 'c:\\Program Files (x86)\\Inno Setup 5\\Compil32.exe'
+vcredistPath = 'c:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Redist\\MSVC\\14.16.27012\\x86\\Microsoft.VC141.CRT'
 
 quiterssReleasePath = ''
 prepareBinPath = ''
@@ -50,6 +51,8 @@ filesFromSource = [
     ['\\style', 'system2.qss'],
     ['\\style', 'news.css'],
     ['\\style', 'Rstyle_v1.2.css'],
+    ['\\style', 'dark.qss'],
+    ['\\style', 'web_dark.css'],
     ['', 'AUTHORS'],
     ['', 'COPYING'],
     ['', 'HISTORY_EN'],
@@ -116,6 +119,11 @@ filesFromQtSDKBin = [
 filesFromOpenSSL = [
     ['', 'libcrypto-1_1.dll'],
     ['', 'libssl-1_1.dll']
+]
+
+filesFromVcredist = [
+    ['', 'msvcp140.dll'],
+    ['', 'vcruntime140.dll']
 ]
 
 strProductVer = '0.0.0'
@@ -303,6 +311,7 @@ def readConfigFile():
     global quiterssToolsPath
     global packerPath
     global innoSetupCompilerPath
+    global vcredistPath
     
     global serverFtp
     global userFtp
@@ -333,6 +342,7 @@ def readConfigFile():
     quiterssToolsPath = config.get('paths', 'quiterssToolsPath')
     packerPath = config.get('paths', 'packerPath')
     innoSetupCompilerPath = config.get('paths', 'innoSetupCompilerPath')
+    vcredistPath = config.get('paths', 'vcredistPath')
       
     serverFtp = config.get('ftp', 'serverFtp')
     userFtp = config.get('ftp', 'userFtp')
@@ -359,6 +369,7 @@ def writeConfigFile():
     config.set('paths', 'quiterssToolsPath', quiterssToolsPath)
     config.set('paths', 'packerPath', packerPath)
     config.set('paths', 'innoSetupCompilerPath', innoSetupCompilerPath)
+    config.set('paths', 'vcredistPath', vcredistPath)
 
     # Writing our configuration to file
     with open(configFileName, 'wb') as configfile:
@@ -574,6 +585,7 @@ def main():
         copyFileList(filesFromQtSDKPlugins, qtsdkPath + '\\plugins')
         copyFileList(filesFromQtSDKBin, qtsdkPath + '\\bin')
         copyFileList(filesFromOpenSSL, opensslPath + '\\bin')
+        copyFileList(filesFromVcredist, vcredistPath)
         makePortableVersion()
         
         if (operationType != 1):

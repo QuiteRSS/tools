@@ -14,7 +14,7 @@ import shutil
 import sys
 from subprocess import call
 
-qtsdkPath = 'C:\\Qt\\5.13.1\\msvc2017'
+qtsdkPath = 'C:\\Qt\\5.14.1\\msvc2017'
 opensslPath = 'c:\\Program Files (x86)\\OpenSSL-Win32'
 quiterssSourcePath = 'd:\\Programming\\QuiteRSS\\quiterss'
 quiterssBuildPath = 'd:\\Programming\\QuiteRSS\\build-QuiteRSS-Desktop'
@@ -93,9 +93,9 @@ filesFromQtSDKPlugins = [
 ]
 
 filesFromQtSDKBin = [
-    ['', 'icudt59.dll'],
-    ['', 'icuin59.dll'],
-    ['', 'icuuc59.dll'],
+    ['', 'icudt65.dll'],
+    ['', 'icuin65.dll'],
+    ['', 'icuuc65.dll'],
     ['', 'libxml2.dll'],
     ['', 'libxslt.dll'], 
     ['', 'Qt5Core.dll'],

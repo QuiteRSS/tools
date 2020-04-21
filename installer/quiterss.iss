@@ -71,10 +71,20 @@ Name: "sl"; MessagesFile: "compiler:Languages\Slovenian.isl"
 Filename: {app}\{#_AppName}.url; Section: InternetShortcut; Key: URL; String: http://quiterss.org
 
 [InstallDelete]
-Type: files; Name: {app}\*
+Type: files; Name: {app}\*dll
+Type: filesandordirs; Name: {app}\audio
+Type: filesandordirs; Name: {app}\bearer
+Type: filesandordirs; Name: {app}\iconengines
+Type: filesandordirs; Name: {app}\imageformats
+Type: filesandordirs; Name: {app}\lang
+Type: filesandordirs; Name: {app}\mediaservice
+Type: filesandordirs; Name: {app}\platforms
+Type: filesandordirs; Name: {app}\printsupport
+Type: filesandordirs; Name: {app}\sqldrivers
+Type: filesandordirs; Name: {app}\styles
 
 [UninstallDelete]
-Type: files; Name: {app}\{#_AppName}.url
+Type: filesandordirs; Name: {app}
 
 [Run]
 Filename: "{app}\{#_AppName}.exe"; Description: "{cm:LaunchProgram,{#StringChange(_AppName, "&", "&&")}}"; Flags: nowait postinstall skipifsilent

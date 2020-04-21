@@ -13,7 +13,7 @@
 		<State_Province />
 		<Zip_Postal_Code />
 		<Country />
-		<Company_WebSite_URL>http://quiterss.org</Company_WebSite_URL>
+		<Company_WebSite_URL>https://quiterss.org</Company_WebSite_URL>
 		<Contact_Info>
 			<Author_First_Name>Khokhryakov</Author_First_Name>
 			<Author_Last_Name>Aleksey</Author_Last_Name>
@@ -34,10 +34,10 @@
 	</Company_Info>
 	<Program_Info>
 		<Program_Name>QuiteRSS</Program_Name>
-		<Program_Version>0.18.11</Program_Version>
-		<Program_Release_Month>05</Program_Release_Month>
-		<Program_Release_Day>31</Program_Release_Day>
-		<Program_Release_Year>2018</Program_Release_Year>
+		<Program_Version>0.19.4</Program_Version>
+		<Program_Release_Month>04</Program_Release_Month>
+		<Program_Release_Day>21</Program_Release_Day>
+		<Program_Release_Year>2020</Program_Release_Year>
 		<Program_Cost_Dollars />
 		<Program_Cost_Other_Code />
 		<Program_Cost_Other />
@@ -51,9 +51,9 @@
 		<Program_Category_Class>Communications::Newsgroup Clients</Program_Category_Class>
 		<Program_System_Requirements />
 		<File_Info>
-			<File_Size_Bytes>39254365</File_Size_Bytes>
-			<File_Size_K>38334</File_Size_K>
-			<File_Size_MB>37.44</File_Size_MB>
+			<File_Size_Bytes>38512310</File_Size_Bytes>
+			<File_Size_K>37609</File_Size_K>
+			<File_Size_MB>36.73</File_Size_MB>
 		</File_Info>
 		<Expire_Info>
 			<Has_Expire_Info>N</Has_Expire_Info>
@@ -106,15 +106,15 @@ Open-source</Char_Desc_2000>
 	</Program_Descriptions>
 	<Web_Info>
 		<Application_URLs>
-			<Application_Info_URL>http://quiterss.org</Application_Info_URL>
-			<Application_Order_URL>http://quiterss.org</Application_Order_URL>
+			<Application_Info_URL>https://quiterss.org</Application_Info_URL>
+			<Application_Order_URL>https://quiterss.org</Application_Order_URL>
 			<Application_Screenshot_URL>https://github.com/QuiteRSS/tools/raw/master/screenshots/screenshots01.png</Application_Screenshot_URL>
 			<Application_Icon_URL>https://raw.githubusercontent.com/QuiteRSS/tools/master/installer/logo55.bmp</Application_Icon_URL>
 			<Application_XML_File_URL>https://github.com/QuiteRSS/tools/raw/master/quiterss_pad_file.xml</Application_XML_File_URL>
 		</Application_URLs>
 		<Download_URLs>
-			<Primary_Download_URL>http://quiterss.org/files/0.18.11/QuiteRSS-0.18.11.zip</Primary_Download_URL>
-			<Secondary_Download_URL>http://quiterss.org/en/download</Secondary_Download_URL>
+			<Primary_Download_URL>https://quiterss.org/files/0.19.4/QuiteRSS-0.19.4.zip</Primary_Download_URL>
+			<Secondary_Download_URL>https://quiterss.org/en/download</Secondary_Download_URL>
 			<Additional_Download_URL_1 />
 			<Additional_Download_URL_2 />
 		</Download_URLs>
